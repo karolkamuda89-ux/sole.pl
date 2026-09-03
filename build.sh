@@ -1,12 +1,12 @@
 #!/usr/bin/env bash
 # Skrypt budowania na Render — uruchamia się automatycznie przy każdym
-# `git push` (patrz render.yaml, buildCommand). Wszystkie kroki są
-# bezpieczne do uruchomienia wielokrotnie (idempotentne):
-#   - collectstatic: zawsze nadpisuje tym samym wynikiem
-#   - migrate: pomija migracje już zastosowane
-#   - ensure_superuser: pomija, jeśli konto już istnieje
-#   - import_apartments: pomija ofertę, jeśli już istnieje (patrz --force w kodzie)
-#   - refresh_alt_text: zawsze ustawia ten sam, przewidywalny tekst
+# `git push` (patrz Start/Build Command w panelu Render). Zostaje tu TYLKO
+# instalacja zależności i collectstatic — to jedyne dwa kroki, które
+# faktycznie muszą przetrwać z kroku budowania do kroku uruchamiania
+# (a collectstatic, w odróżnieniu od zapisu prawdziwych zdjęć do media/,
+# potwierdzone działa poprawnie w tym miejscu). Migracje bazy, tworzenie
+# superusera i dogrywanie zdjęć ofert przeniesione do start.sh — patrz
+# komentarz tam, dlaczego.
 set -o errexit  # przerwij cały build, jeśli którykolwiek krok się nie powiedzie
 
 pip install -r requirements.txt
@@ -16,8 +16,3 @@ pip install -r requirements.txt
 # uruchomił to bez świeżego clone. --ignore="*.mp4" pomija nagrania wideo
 # apartamentów (nie są to pliki do serwowania jako statyczne assety).
 python manage.py collectstatic --noinput --ignore=raw --ignore="*.mp4"
-
-python manage.py migrate
-python manage.py ensure_superuser
-python manage.py import_apartments
-python manage.py refresh_alt_text

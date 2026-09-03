@@ -21,7 +21,7 @@ services:
     runtime: python
     plan: free
     buildCommand: "bash build.sh"
-    startCommand: "gunicorn config.wsgi:application"
+    startCommand: "bash start.sh"
     envVars:
       - key: DJANGO_SECRET_KEY
         generateValue: true  # Render sam wygeneruje losowy, bezpieczny klucz
