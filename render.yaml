@@ -1,0 +1,61 @@
+# Blueprint Render — jeden plik opisujący całą infrastrukturę (serwer +
+# baza danych), sprawdzany razem z resztą kodu w gicie. Render wykrywa ten
+# plik sam przy podpinaniu repozytorium i proponuje utworzenie usług
+# dokładnie wg tego opisu (można to zaakceptować jednym kliknięciem —
+# "New +" → "Blueprint" w panelu Render, zamiast klikać każde ustawienie
+# osobno).
+#
+# `sync: false` przy zmiennej środowiskowej = Render poprosi o wpisanie jej
+# ręcznie w panelu (raz, przy pierwszym wdrożeniu) — te wartości są
+# sekretne i celowo nie siedzą w tym pliku/w gicie.
+
+databases:
+  - name: strona-mama-db
+    plan: free
+    databaseName: strona_mama
+    user: strona_mama
+
+services:
+  - type: web
+    name: strona-mama
+    runtime: python
+    plan: free
+    buildCommand: "bash build.sh"
+    startCommand: "gunicorn config.wsgi:application"
+    envVars:
+      - key: DJANGO_SECRET_KEY
+        generateValue: true  # Render sam wygeneruje losowy, bezpieczny klucz
+      - key: DJANGO_DEBUG
+        value: "False"
+      - key: DATABASE_URL
+        fromDatabase:
+          name: strona-mama-db
+          property: connectionString
+      - key: PYTHON_VERSION
+        value: "3.14.3"
+      # Login/hasło do panelu /admin/ — wpisz własne przy pierwszym deployu
+      # (patrz core/management/commands/ensure_superuser.py).
+      - key: DJANGO_SUPERUSER_USERNAME
+        sync: false
+      - key: DJANGO_SUPERUSER_EMAIL
+        sync: false
+      - key: DJANGO_SUPERUSER_PASSWORD
+        sync: false
+      # Opcjonalne — wysyłka maila z formularza kontaktowego (patrz
+      # komentarz przy EMAIL_BACKEND w config/settings.py). Bez tych
+      # zmiennych formularz nadal działa, tylko mail nie leci naprawdę.
+      - key: EMAIL_BACKEND
+        sync: false
+      - key: EMAIL_HOST
+        sync: false
+      - key: EMAIL_PORT
+        sync: false
+      - key: EMAIL_HOST_USER
+        sync: false
+      - key: EMAIL_HOST_PASSWORD
+        sync: false
+      - key: DEFAULT_FROM_EMAIL
+        sync: false
+      # Opcjonalne — Meta Pixel (patrz config/settings.py, META_PIXEL_ID).
+      - key: META_PIXEL_ID
+        sync: false

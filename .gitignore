@@ -1,0 +1,17 @@
+__pycache__/
+*.pyc
+db.sqlite3
+.venv/
+venv/
+env/
+staticfiles/
+*.log
+
+# Oryginalne, ciężkie zdjęcia/wideo (surowiec do core/static/core/img/raw/)
+# — nie wrzucamy tego do gita, w repo ma być tylko lekki wynik .webp.
+core/static/core/img/raw/
+
+# Zdjęcia ofert wgrane przez panel admina — jak db.sqlite3, to stan lokalny,
+# nie kod. Startowe dane (7 apartamentów) odtwarza `python manage.py
+# import_apartments`, źródło zdjęć zostaje w core/static/ (w gicie).
+media/

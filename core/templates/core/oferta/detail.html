@@ -1,0 +1,127 @@
+{% extends "core/base.html" %}
+{% load static %}
+
+{% block title %}{{ property.title }} — {{ property.get_location_display }}{% endblock %}
+{% block description %}{{ property.title }}, {{ property.get_location_display }}{% if property.area_m2 %}, {{ property.area_m2 }} m²{% endif %}{% if property.address %} — {{ property.address }}{% endif %}{% endblock %}
+
+{% comment %}
+  Podstrona jednej oferty — wspólna dla wszystkich ofert (patrz
+  core.views.oferta_detail). Galeria używa tej samej karuzeli-lightboksa
+  co strona główna: pierwszych 5 zdjęć widać w siatce, reszta jest w
+  .hidden-tile i wyskakuje w lightboksie (core/static/core/js/lightbox.js
+  sam znajduje wszystkie <img> w .airbnb-gallery-grid, nic nie trzeba
+  dopisywać w JS przy kolejnych ofertach).
+{% endcomment %}
+{% block content %}
+
+<section class="offer-detail">
+  <div class="container">
+    <a href="{% url 'core:oferta_lista' location=property.location %}" class="legal-back">← Wróć do ofert — {{ property.get_location_display }}</a>
+
+    <div class="offer-detail-head">
+      <div>
+        <span class="offer-tile-status status-{{ property.status }}">{{ property.get_status_display }}</span>
+        <h1>{{ property.title }}</h1>
+        {% if property.address %}<p class="offer-detail-address">📍 {{ property.address }}, {{ property.get_location_display }}</p>{% endif %}
+      </div>
+      <div class="offer-detail-price">
+        {% if property.price %}
+          <strong>{{ property.price|floatformat:0 }} €</strong>
+        {% else %}
+          <strong>Cena na zapytanie</strong>
+        {% endif %}
+        <a href="{% url 'core:home' %}#kontakt" class="btn btn-primary">Zapytaj o ofertę</a>
+      </div>
+    </div>
+
+    <div class="offer-detail-facts">
+      {% if property.area_m2 %}
+        <div><strong>{{ property.area_m2 }} m²</strong><span>Powierzchnia</span></div>
+      {% endif %}
+      {% if property.rooms %}
+        <div><strong>{{ property.rooms }}</strong><span>Pokoje</span></div>
+      {% endif %}
+      {% if property.bathrooms %}
+        <div><strong>{{ property.bathrooms }}</strong><span>Łazienki</span></div>
+      {% endif %}
+      <div><strong>{{ property.created_at|date:"d.m.Y" }}</strong><span>Opublikowano</span></div>
+    </div>
+
+    {% with images=property.images.all %}
+      {% if images %}
+        <div class="airbnb-gallery-grid offer-detail-gallery">
+          {% for image in images %}
+            <a href="#" class="airbnb-gallery-item{% if forloop.first %} main{% elif forloop.counter > 5 %} hidden-tile{% endif %}">
+              <img src="{{ image.image.url }}" alt="{{ image.alt_text }}"{% if not forloop.first %} loading="lazy"{% endif %}>
+              {% if forloop.counter == 5 and images|length > 5 %}
+                <span class="airbnb-gallery-more">Pokaż wszystkie {{ images|length }} zdjęć</span>
+              {% endif %}
+            </a>
+          {% endfor %}
+        </div>
+      {% endif %}
+    {% endwith %}
+
+    {% comment %}
+      4 sekcje opisowe oferty — każda ma swoje pole w Property (models.py)
+      i swoją sekcję w formularzu admina (te same nazwy, patrz admin.py),
+      więc łatwo znaleźć, gdzie co edytować. Pusta sekcja po prostu się
+      nie renderuje (np. brak "Zalet" nie zostawia pustej ramki).
+    {% endcomment %}
+    {% if property.description %}
+      <div class="offer-section">
+        <h2>Opis nieruchomości</h2>
+        <p>{{ property.description|linebreaksbr }}</p>
+      </div>
+    {% endif %}
+
+    {% if property.area_m2 or property.area_details %}
+      <div class="offer-section">
+        <h2>Powierzchnia</h2>
+        {% if property.area_m2 %}<p class="offer-section-figure">{{ property.area_m2 }} m²</p>{% endif %}
+        {% if property.area_details %}<p>{{ property.area_details|linebreaksbr }}</p>{% endif %}
+      </div>
+    {% endif %}
+
+    <div class="offer-section-grid">
+      {% with advantages=property.advantages_list %}
+        {% if advantages %}
+          <div class="offer-section">
+            <h2>Zalety</h2>
+            <ul>
+              {% for item in advantages %}
+                <li><span class="check">✓</span> {{ item }}</li>
+              {% endfor %}
+            </ul>
+          </div>
+        {% endif %}
+      {% endwith %}
+
+      {% with amenities=property.amenities_list %}
+        {% if amenities %}
+          <div class="offer-section">
+            <h2>Wyposażenie</h2>
+            <ul>
+              {% for item in amenities %}
+                <li><span class="check">✓</span> {{ item }}</li>
+              {% endfor %}
+            </ul>
+          </div>
+        {% endif %}
+      {% endwith %}
+    </div>
+  </div>
+</section>
+
+{% comment %} Lightbox — ten sam co na stronie głównej, patrz base.html/lightbox.js. {% endcomment %}
+<div class="lightbox" id="gallery-lightbox" hidden>
+  <button type="button" class="lightbox-close" aria-label="Zamknij galerię">×</button>
+  <button type="button" class="lightbox-btn prev" aria-label="Poprzednie zdjęcie">‹</button>
+  <figure class="lightbox-figure">
+    <img class="lightbox-img" src="" alt="">
+    <figcaption class="lightbox-counter"></figcaption>
+  </figure>
+  <button type="button" class="lightbox-btn next" aria-label="Następne zdjęcie">›</button>
+</div>
+
+{% endblock %}

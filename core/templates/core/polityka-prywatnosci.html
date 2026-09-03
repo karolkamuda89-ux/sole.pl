@@ -1,0 +1,146 @@
+{% extends "core/base.html" %}
+
+{% block title %}Polityka prywatności — Sole{% endblock %}
+{% block description %}Polityka prywatności serwisu — zasady przetwarzania danych osobowych i wykorzystywania plików cookies.{% endblock %}
+
+{% comment %}
+  Treść przeniesiona z t1.sole.pl/polityka-prywatnosci/ (ta sama firma,
+  te same dane rejestrowe) — dostosowałem tylko punkt 11.6 (narzędzia
+  cookies), bo na oryginale było to niedokończone/placeholder, a na tym
+  serwisie na razie nie ma wdrożonych żadnych narzędzi analitycznych.
+  Jeśli dodamy np. Google Analytics, trzeba będzie zaktualizować ten punkt.
+{% endcomment %}
+{% block content %}
+
+<section class="legal">
+  <div class="container legal-content">
+    <a href="{% url 'core:home' %}" class="legal-back">← Wróć na stronę główną</a>
+
+    <span class="eyebrow">Dokument prawny</span>
+    <h1>Polityka prywatności</h1>
+
+    <h2>1. Postanowienia ogólne</h2>
+    <p>Niniejsza Polityka Prywatności określa zasady przetwarzania danych osobowych oraz wykorzystywania plików cookies i technologii podobnych w związku z korzystaniem z formularza.</p>
+    <p>Polityka ma charakter informacyjny i służy realizacji obowiązków wynikających w szczególności z: Rozporządzenia Parlamentu Europejskiego i Rady (UE) 2016/679 z dnia 27 kwietnia 2016 r. („RODO”), ustawy z dnia 10 maja 2018 r. o ochronie danych osobowych, przepisów dotyczących komunikacji elektronicznej, w tym zasad korzystania z cookies (w szczególności ustawy z dnia 12 lipca 2024 r. – Prawo komunikacji elektronicznej).</p>
+    <p>Administratorem danych osobowych jest Sole Sp. z o.o. z siedzibą przy ul. Słowackiego 4c/14, 34-120 Andrychów, wpisana do rejestru przedsiębiorców KRS pod numerem 0000037559, NIP: 5512091132 (dalej: „Administrator”).</p>
+    <p>Administrator dokłada należytej staranności, aby dane osobowe były przetwarzane zgodnie z prawem, rzetelnie i w sposób przejrzysty oraz odpowiednio zabezpieczone.</p>
+
+    <h2>2. Dane kontaktowe w sprawach ochrony danych</h2>
+    <p>W sprawach dotyczących przetwarzania danych osobowych można kontaktować się z Administratorem: e-mail <a href="mailto:sole@sole.pl">sole@sole.pl</a>.</p>
+    <p>Administrator nie wyznaczył Inspektora Ochrony Danych.</p>
+
+    <h2>3. Zakres, źródła i kategorie przetwarzanych danych</h2>
+    <p>Administrator może przetwarzać dane osobowe przekazywane przez użytkowników Serwisu, w szczególności dane identyfikacyjne i kontaktowe, np.:</p>
+    <ul>
+      <li>imię i nazwisko,</li>
+      <li>adres e-mail,</li>
+      <li>dane o aktywności w Serwisie (w zakresie wynikającym z używanych narzędzi i ustawień cookies).</li>
+    </ul>
+    <p>Dane osobowe pochodzą co do zasady bezpośrednio od osoby, której dane dotyczą (np. formularz, konto klienta, zamówienie, e-mail).</p>
+
+    <h2>4. Cele i podstawy prawne przetwarzania danych</h2>
+    <p>Administrator przetwarza dane osobowe wyłącznie wtedy, gdy istnieje odpowiednia podstawa prawna. W zależności od sytuacji dane mogą być przetwarzane w następujących celach:</p>
+
+    <h3>4.1. Obsługa zapytań (formularz kontaktowy, e-mail, telefon)</h3>
+    <p>Cel: udzielenie odpowiedzi na pytanie, przedstawienie oferty, kontakt w sprawie zgłoszenia.</p>
+    <p>Podstawa prawna: art. 6 ust. 1 lit. f RODO – prawnie uzasadniony interes Administratora polegający na obsłudze korespondencji i zapytań, ewentualnie art. 6 ust. 1 lit. b RODO – gdy kontakt zmierza do zawarcia umowy (wykonanie umowy o świadczenie usług drogą elektroniczną / podjęcie działań przed zawarciem umowy).</p>
+
+    <h3>4.2. Marketing własnych produktów/usług (jeśli prowadzony)</h3>
+    <p>Cel: prowadzenie działań marketingowych, w tym informowanie o ofercie, promocjach, nowościach.</p>
+    <p>Podstawa prawna (w zależności od formy i kanału): art. 6 ust. 1 lit. f RODO – prawnie uzasadniony interes Administratora (np. marketing bezpośredni w dopuszczalnym zakresie), art. 6 ust. 1 lit. a RODO – zgoda, jeśli jest wymagana (np. określone formy komunikacji lub określone technologie), dodatkowo zgodnie z przepisami o komunikacji elektronicznej – gdy wymagane są odrębne zgody marketingowe.</p>
+
+    <h3>4.3. Analityka, statystyka, zapewnienie bezpieczeństwa i prawidłowego działania Serwisu</h3>
+    <p>Cel: monitorowanie ruchu, poprawa działania Serwisu, wykrywanie nadużyć, bezpieczeństwo IT.</p>
+    <p>Podstawa prawna: art. 6 ust. 1 lit. f RODO – prawnie uzasadniony interes Administratora, w zakresie technologii cookies/innych identyfikatorów – odpowiednio także zgoda użytkownika, jeśli jest wymagana przez przepisy.</p>
+
+    <h2>5. Czy podanie danych jest obowiązkowe?</h2>
+    <p>Podanie danych osobowych jest co do zasady dobrowolne.</p>
+
+    <h2>6. Odbiorcy danych osobowych</h2>
+    <p>Dane osobowe mogą być przekazywane podmiotom współpracującym z Administratorem wyłącznie w zakresie niezbędnym do realizacji celów przetwarzania, w szczególności:</p>
+    <ul>
+      <li>podmiotom świadczącym usługi księgowe i podatkowe,</li>
+      <li>kancelariom prawnym/doradcom prawnym,</li>
+      <li>operatorom płatności i bankom,</li>
+      <li>ubezpieczycielom,</li>
+      <li>podmiotom świadczącym usługi IT, hosting, utrzymanie serwisu, wsparcie techniczne.</li>
+    </ul>
+    <p>Dane mogą być także udostępniane uprawnionym organom publicznym, jeżeli obowiązek taki wynika z przepisów prawa.</p>
+
+    <h2>7. Przekazywanie danych poza Europejski Obszar Gospodarczy (EOG)</h2>
+    <p>Co do zasady Administrator przetwarza dane na terenie Europejskiego Obszaru Gospodarczego (EOG). Jeżeli Administrator korzysta z narzędzi dostawców mających siedzibę poza EOG lub skutkujących transferem danych poza EOG, dane mogą być przekazywane poza EOG wyłącznie z zachowaniem wymogów RODO, w szczególności na podstawie decyzji stwierdzającej odpowiedni stopień ochrony, standardowych klauzul umownych (SCC) lub innych mechanizmów przewidzianych przez RODO.</p>
+    <p>Szczegółowe informacje o stosowanych narzędziach i ewentualnych transferach poza EOG można uzyskać, kontaktując się z Administratorem.</p>
+
+    <h2>8. Okres przechowywania danych (retencja)</h2>
+    <p>Administrator przechowuje dane osobowe przez okres nie dłuższy, niż jest to niezbędne do realizacji celów, dla których dane zostały zebrane, a następnie przez okres wymagany przepisami prawa lub niezbędny do ochrony praw Administratora. W szczególności:</p>
+    <ul>
+      <li>dane związane z zamówieniami i realizacją umowy – przez czas niezbędny do wykonania umowy oraz obsługi posprzedażowej,</li>
+      <li>dane księgowe i podatkowe (np. faktury) – przez okres wymagany przepisami prawa podatkowego i rachunkowego,</li>
+      <li>dane z korespondencji (formularz kontaktowy, e-mail) – przez czas niezbędny do obsługi sprawy, a następnie przez okres przedawnienia ewentualnych roszczeń lub przez okres uzasadniony archiwizacyjnie,</li>
+      <li>dane przetwarzane na podstawie zgody – do czasu cofnięcia zgody, chyba że wcześniejsze usunięcie nie jest możliwe z uwagi na obowiązek prawny lub konieczność obrony roszczeń,</li>
+      <li>dane przetwarzane w celach marketingowych na podstawie prawnie uzasadnionego interesu – do czasu wniesienia skutecznego sprzeciwu,</li>
+      <li>dane związane z plikami cookies i technologiami podobnymi – przez okres wynikający z rodzaju danego pliku cookie/ustawień narzędzia oraz zgody użytkownika.</li>
+    </ul>
+
+    <h2>9. Prawa osób, których dane dotyczą</h2>
+    <p>Osobie, której dane dotyczą, przysługują – na zasadach określonych w RODO – następujące prawa:</p>
+    <ul>
+      <li>prawo dostępu do danych,</li>
+      <li>prawo do sprostowania danych,</li>
+      <li>prawo do usunięcia danych („prawo do bycia zapomnianym”) – w przypadkach przewidzianych prawem,</li>
+      <li>prawo do ograniczenia przetwarzania,</li>
+      <li>prawo do przenoszenia danych (jeżeli przetwarzanie odbywa się na podstawie zgody lub umowy i w sposób zautomatyzowany),</li>
+      <li>prawo sprzeciwu wobec przetwarzania danych opartego na art. 6 ust. 1 lit. f RODO (w tym wobec marketingu bezpośredniego),</li>
+      <li>prawo cofnięcia zgody w dowolnym momencie (jeżeli przetwarzanie odbywa się na podstawie zgody), bez wpływu na zgodność z prawem przetwarzania dokonanego przed cofnięciem zgody,</li>
+      <li>prawo wniesienia skargi do Prezesa Urzędu Ochrony Danych Osobowych (Prezes UODO), jeżeli osoba uzna, że przetwarzanie danych narusza przepisy prawa.</li>
+    </ul>
+    <p>W celu realizacji swoich praw można skontaktować się z Administratorem zgodnie z danymi podanymi w sekcji 2.</p>
+
+    <h2>10. Zautomatyzowane podejmowanie decyzji i profilowanie</h2>
+    <p>Administrator może wykorzystywać dane do profilowania w celach marketingowych (np. dopasowanie reklam/pomiar skuteczności kampanii), jednak nie podejmuje decyzji wywołujących skutki prawne wyłącznie w oparciu o zautomatyzowane przetwarzanie.</p>
+
+    <h2>11. Pliki cookies i technologie podobne</h2>
+
+    <h3>11.1. Czym są cookies?</h3>
+    <p>Cookies to niewielkie pliki tekstowe zapisywane na urządzeniu użytkownika (np. komputerze, smartfonie) podczas korzystania z Serwisu. Mogą one zawierać identyfikator przeglądarki i służyć m.in. zapewnieniu prawidłowego działania strony, analizie ruchu lub celom marketingowym.</p>
+
+    <h3>11.2. Jakie technologie mogą być wykorzystywane?</h3>
+    <p>Administrator może wykorzystywać pliki cookies, local storage/session storage, piksele śledzące, tagi i podobne technologie analityczne lub marketingowe, w zależności od zastosowanych narzędzi i funkcjonalności Serwisu.</p>
+
+    <h3>11.3. Cele wykorzystywania cookies</h3>
+    <ul>
+      <li>Niezbędne (techniczne/funkcjonalne) – prawidłowe działanie Serwisu, bezpieczeństwo, utrzymanie sesji, zapamiętywanie ustawień.</li>
+      <li>Analityczne/statystyczne – analiza ruchu, tworzenie statystyk odwiedzin, poprawa wydajności i funkcjonalności Serwisu.</li>
+      <li>Marketingowe/reklamowe – prowadzenie kampanii marketingowych, pomiar skuteczności reklam, dopasowanie treści reklamowych.</li>
+      <li>Personalizacyjne – dostosowanie treści i ustawień do preferencji użytkownika.</li>
+    </ul>
+
+    <h3>11.4. Podstawa prawna stosowania cookies</h3>
+    <p>Cookies niezbędne do działania Serwisu mogą być stosowane na podstawie uzasadnionego interesu Administratora oraz zgodnie z przepisami o komunikacji elektronicznej – w zakresie dozwolonym bez zgody. Cookies analityczne, marketingowe i inne niekonieczne mogą być stosowane po uzyskaniu zgody użytkownika, jeżeli zgoda jest wymagana przez przepisy prawa.</p>
+
+    <h3>11.5. Zarządzanie cookies</h3>
+    <p>Przy pierwszej wizycie w Serwisie wyświetla się baner z prośbą o zgodę na cookies marketingowe — dopóki użytkownik nie kliknie „Akceptuję", żadne narzędzie marketingowe (patrz pkt 11.6) się nie uruchamia. Wybór (akceptacja albo odrzucenie) zapamiętywany jest w przeglądarce użytkownika i można go w każdej chwili zmienić, czyszcząc dane strony w ustawieniach przeglądarki. Niezależnie od tego użytkownik może też zarządzać cookies bezpośrednio w ustawieniach swojej przeglądarki. Ograniczenie stosowania cookies może wpłynąć na niektóre funkcjonalności Serwisu.</p>
+
+    <h3>11.6. Lista używanych narzędzi i dostawców</h3>
+    <p>Serwis korzysta z czcionek Google Fonts (Outfit, DM Sans), ładowanych bezpośrednio z serwerów Google — w związku z tym przeglądarka użytkownika nawiązuje połączenie z Google i przekazuje mu adres IP. To połączenie następuje niezależnie od zgody w bannerze cookies, ponieważ jest niezbędne do wyświetlenia strony.</p>
+    <p>Po wyrażeniu zgody w bannerze cookies Serwis może dodatkowo wykorzystywać Meta Pixel (Facebook) w celach marketingowych/analitycznych — do pomiaru skuteczności reklam i tworzenia grup odbiorców w ramach Meta Ads. Meta Pixel ładuje się wyłącznie po zaakceptowaniu cookies marketingowych i nigdy automatycznie. Administrator przetwarzającego dane w ramach Meta Pixel jest Meta Platforms, Inc. — szczegóły przetwarzania danych przez Meta dostępne są w jej własnej polityce prywatności.</p>
+
+    <h2>12. Bezpieczeństwo danych</h2>
+    <p>Administrator stosuje odpowiednie środki techniczne i organizacyjne, aby zapewnić stopień bezpieczeństwa odpowiadający ryzyku naruszenia praw lub wolności osób fizycznych. Środki te obejmują w szczególności (w zakresie adekwatnym do ryzyka):</p>
+    <ul>
+      <li>kontrolę dostępu do danych,</li>
+      <li>ograniczenie dostępu do danych wyłącznie do osób upoważnionych,</li>
+      <li>rozwiązania organizacyjne i techniczne zabezpieczające systemy informatyczne,</li>
+      <li>działania minimalizujące ryzyko utraty, zniszczenia lub nieuprawnionego ujawnienia danych.</li>
+    </ul>
+
+    <h2>13. Zmiany Polityki Prywatności</h2>
+    <p>Administrator może aktualizować niniejszą Politykę Prywatności w szczególności w przypadku zmian przepisów prawa, zmian technologicznych, zmian funkcjonalności Serwisu lub zmian w sposobie przetwarzania danych bądź wykorzystywanych narzędziach.</p>
+    <p>Aktualna wersja Polityki jest publikowana w Serwisie. W przypadku istotnych zmian Administrator może dodatkowo poinformować o nich użytkowników w sposób odpowiedni do charakteru zmiany (np. komunikat w Serwisie lub wiadomość e-mail).</p>
+
+    <h2>14. Kontakt</h2>
+    <p>Sole Sp. z o.o., ul. Słowackiego 4c/14, 34-120 Andrychów<br>e-mail: <a href="mailto:sole@sole.pl">sole@sole.pl</a></p>
+  </div>
+</section>
+
+{% endblock %}

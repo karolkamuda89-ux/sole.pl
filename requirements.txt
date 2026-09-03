@@ -1,0 +1,8 @@
+Django==6.0.2
+Pillow==12.3.0
+
+# Pod wdrożenie na Render (i każdy inny prawdziwy hosting):
+gunicorn==23.0.0          # serwer WSGI produkcyjny — runserver nie jest do tego
+whitenoise==6.11.0        # serwuje pliki statyczne bez osobnego Nginx-a
+dj-database-url==3.0.1    # zamienia DATABASE_URL (z Render) na config Django
+psycopg2-binary==2.9.11   # sterownik PostgreSQL — baza produkcyjna zamiast SQLite

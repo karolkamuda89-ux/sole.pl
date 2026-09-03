@@ -1,0 +1,62 @@
+{% extends "core/base.html" %}
+{% load static %}
+
+{% block title %}Oferty — {{ location_label }}{% endblock %}
+{% block description %}Aktualne oferty nieruchomości: {{ location_label }}.{% endblock %}
+
+{% comment %}
+  Lista ofert dla jednej lokalizacji — ten sam szablon obsługuje i Polskę,
+  i Teneryfę (core.views.oferta_lista, kontekst: location, location_label,
+  properties). Każdy kafelek linkuje do core/oferta/detail.html tej oferty.
+  Nowa oferta dodana w adminie pojawi się tutaj sama — nic nie trzeba
+  dopisywać w szablonie.
+{% endcomment %}
+{% block content %}
+
+<section class="offer-list">
+  <div class="container">
+    <a href="{% url 'core:home' %}#oferta" class="legal-back">← Wróć do wyboru lokalizacji</a>
+
+    <div class="section-head">
+      <span class="eyebrow">Oferta</span>
+      <h1>Nieruchomości — {{ location_label }}</h1>
+      <p>Wybierz ofertę, aby zobaczyć pełny opis, zdjęcia i szczegóły.</p>
+    </div>
+
+    {% if properties %}
+      <div class="offer-tiles">
+        {% for property in properties %}
+          <a href="{{ property.get_absolute_url }}" class="offer-tile">
+            <div class="offer-tile-cover">
+              {% if property.cover_image %}
+                <img src="{{ property.cover_image.image.url }}" alt="{{ property.cover_image.alt_text }}" loading="lazy">
+              {% endif %}
+              <span class="offer-tile-status status-{{ property.status }}">{{ property.get_status_display }}</span>
+            </div>
+            <div class="offer-tile-body">
+              <h3>{{ property.title }}</h3>
+              {% if property.address %}<p class="offer-tile-address">{{ property.address }}</p>{% endif %}
+
+              <div class="offer-tile-meta">
+                {% if property.area_m2 %}<span>{{ property.area_m2 }} m²</span>{% endif %}
+                {% if property.rooms %}<span>{{ property.rooms }} pok.</span>{% endif %}
+                {% if property.price %}<span>{{ property.price|floatformat:0 }} €</span>{% else %}<span>Cena na zapytanie</span>{% endif %}
+              </div>
+
+              <div class="offer-tile-footer">
+                <span class="offer-tile-date">Opublikowano {{ property.created_at|date:"d.m.Y" }}</span>
+                <span class="location-card-cta">Zobacz ofertę →</span>
+              </div>
+            </div>
+          </a>
+        {% endfor %}
+      </div>
+    {% else %}
+      <div class="offer-tiles-empty">
+        <p>Na razie nie mamy tu jeszcze żadnych ofert — wróć niedługo.</p>
+      </div>
+    {% endif %}
+  </div>
+</section>
+
+{% endblock %}

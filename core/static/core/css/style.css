@@ -1,0 +1,1513 @@
+/* ==========================================================================
+   Zmienne / paleta kolorów
+   Zmień wartości tutaj, żeby przekolorować całą stronę — reszta pliku
+   odwołuje się do tych zmiennych przez var(--nazwa), nigdzie indziej nie
+   ma "twardo" wpisanych kolorów navy/teal.
+   ========================================================================== */
+:root {
+  --navy: #0f172a;
+  --navy-light: #1e293b;
+  --teal: #2997aa;
+  --teal-dark: #22808f;
+  --teal-light: #eaf5f6;
+  --text: #454f5e;
+  --text-dark: #0f172a;
+  --bg: #ffffff;
+  --bg-soft: #eaf1f3;
+  --border: #e2e8f0;
+  --radius: 14px;
+  --shadow: 0 10px 30px -12px rgba(15, 23, 42, 0.18);
+  --container: 1160px;
+}
+
+/* ==========================================================================
+   Reset
+   ========================================================================== */
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  margin: 0;
+  font-family: "DM Sans", "Segoe UI", Arial, sans-serif;
+  color: var(--text);
+  background: var(--bg);
+  line-height: 1.6;
+  -webkit-font-smoothing: antialiased;
+}
+
+h1, h2, h3, h4 {
+  font-family: "Outfit", "Segoe UI", Arial, sans-serif;
+  color: var(--text-dark);
+  margin: 0 0 0.5em;
+  line-height: 1.2;
+  font-weight: 600;
+}
+
+p {
+  margin: 0 0 1em;
+}
+
+img {
+  max-width: 100%;
+  display: block;
+}
+
+a {
+  color: inherit;
+  text-decoration: none;
+}
+
+ul {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.container {
+  width: 100%;
+  max-width: var(--container);
+  margin: 0 auto;
+  padding: 0 24px;
+}
+
+section {
+  padding: 96px 0;
+}
+
+.section-head {
+  text-align: center;
+  max-width: 640px;
+  margin: 0 auto 56px;
+}
+
+.eyebrow {
+  display: inline-block;
+  font-size: 0.8rem;
+  font-weight: 600;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--teal-dark);
+  background: var(--teal-light);
+  padding: 6px 14px;
+  border-radius: 999px;
+  margin-bottom: 16px;
+}
+
+.section-head h2 {
+  font-size: clamp(1.8rem, 3vw, 2.4rem);
+}
+
+.section-head p {
+  color: var(--text);
+}
+
+/* ==========================================================================
+   Przyciski
+   ========================================================================== */
+.btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 14px 28px;
+  border-radius: 999px;
+  font-weight: 600;
+  font-size: 0.95rem;
+  border: 2px solid transparent;
+  cursor: pointer;
+  transition: transform 0.2s ease, box-shadow 0.2s ease, background 0.2s ease, color 0.2s ease;
+}
+
+.btn-primary {
+  background: var(--teal);
+  color: #ffffff;
+}
+
+.btn-primary:hover {
+  background: var(--teal-dark);
+  transform: translateY(-2px);
+  box-shadow: 0 12px 20px -8px rgba(41, 151, 170, 0.55);
+}
+
+.btn-outline {
+  background: transparent;
+  border-color: rgba(255, 255, 255, 0.5);
+  color: #ffffff;
+}
+
+.btn-outline:hover {
+  background: rgba(255, 255, 255, 0.12);
+  border-color: #ffffff;
+}
+
+.btn-dark {
+  background: var(--navy);
+  color: #fff;
+}
+
+.btn-dark:hover {
+  background: var(--navy-light);
+  transform: translateY(-2px);
+}
+
+/* ==========================================================================
+   Nagłówek / nawigacja
+   "sticky" + półprzezroczyste tło = pasek zostaje na górze podczas
+   scrollowania i lekko rozmywa to, co jest pod nim (backdrop-filter).
+   ========================================================================== */
+.site-header {
+  position: sticky;
+  top: 0;
+  z-index: 100;
+  background: rgba(255, 255, 255, 0.85);
+  backdrop-filter: blur(10px);
+  border-bottom: 1px solid var(--border);
+}
+
+.navbar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 18px 0;
+}
+
+.brand {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-family: "Outfit", sans-serif;
+  font-weight: 700;
+  font-size: 1.25rem;
+  color: var(--text-dark);
+}
+
+.brand-mark {
+  width: 38px;
+  height: 38px;
+  border-radius: 10px;
+  background: linear-gradient(135deg, var(--teal), var(--navy));
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #fff;
+  font-weight: 700;
+}
+
+.nav-links {
+  display: flex;
+  align-items: center;
+  gap: 32px;
+}
+
+.nav-links a {
+  font-size: 0.95rem;
+  font-weight: 500;
+  color: var(--text);
+  transition: color 0.2s ease;
+}
+
+.nav-links a:hover {
+  color: var(--teal-dark);
+}
+
+.nav-actions {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+}
+
+/* Przycisk-hamburger — widoczny tylko na mobile (patrz media query
+   max-width: 720px). Kliknięcie obsługuje mały skrypt w base.html,
+   który dokłada klasę .is-open do .nav-links. */
+.nav-toggle {
+  display: none;
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: 6px;
+}
+
+.nav-toggle span {
+  display: block;
+  width: 24px;
+  height: 2px;
+  background: var(--text-dark);
+  margin: 5px 0;
+  transition: 0.2s ease;
+}
+
+/* ==========================================================================
+   Hero
+   ========================================================================== */
+.hero {
+  position: relative;
+  overflow: hidden;
+  background:
+    radial-gradient(circle at 15% 20%, rgba(41, 151, 170, 0.35), transparent 45%),
+    radial-gradient(circle at 85% 80%, rgba(41, 151, 170, 0.25), transparent 50%),
+    linear-gradient(135deg, var(--navy) 0%, #16233d 60%, var(--navy-light) 100%);
+  color: #fff;
+  padding: 120px 0 110px;
+}
+
+.hero::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background-image:
+    linear-gradient(rgba(255, 255, 255, 0.06) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(255, 255, 255, 0.06) 1px, transparent 1px);
+  background-size: 48px 48px;
+  mask-image: radial-gradient(ellipse at center, black 0%, transparent 75%);
+  pointer-events: none;
+}
+
+/* Dwie kolumny: tekst trochę szerszy (1.1fr) niż zdjęcie (0.9fr).
+   Na wąskich ekranach zamieniamy to na jedną kolumnę — patrz media query
+   (max-width: 960px) niżej w pliku. */
+.hero .container {
+  position: relative;
+  display: grid;
+  grid-template-columns: 1.1fr 0.9fr;
+  gap: 48px;
+  align-items: center;
+}
+
+.hero-eyebrow {
+  display: inline-block;
+  font-size: 0.8rem;
+  font-weight: 600;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: #cdeef2;
+  background: rgba(41, 151, 170, 0.25);
+  border: 1px solid rgba(41, 151, 170, 0.5);
+  padding: 6px 14px;
+  border-radius: 999px;
+  margin-bottom: 20px;
+}
+
+.hero h1 {
+  color: #fff;
+  font-size: clamp(1.9rem, 2.9vw, 2.1rem);
+  margin-bottom: 5px;
+}
+
+.hero h1 span {
+  color: var(--teal);
+}
+
+.hero p.lead {
+  color: rgba(255, 255, 255, 0.78);
+  font-size: 1rem;
+  max-width: 480px;
+  margin-bottom: 32px;
+}
+
+.hero-actions {
+  display: flex;
+  gap: 16px;
+  flex-wrap: wrap;
+}
+
+.hero-stats {
+  display: flex;
+  gap: 32px;
+  margin-top: 48px;
+  flex-wrap: wrap;
+}
+
+.hero-stats div strong {
+  display: block;
+  font-family: "Outfit", sans-serif;
+  font-size: 1.6rem;
+  color: #fff;
+}
+
+.hero-stats div span {
+  font-size: 0.85rem;
+  color: rgba(255, 255, 255, 0.65);
+}
+
+/* Ramka pod zdjęcie w hero. Zdjęcie podpinamy w home.html przez zmienną
+   --hero-img (patrz komentarz w szablonie przy .hero-visual). Dopóki jej
+   nie ma, --hero-img jest puste i widać tylko gradient poniżej — dzięki
+   temu strona wygląda dobrze zarówno przed, jak i po dodaniu zdjęcia. */
+.hero-visual {
+  --hero-img: none;
+  position: relative;
+  aspect-ratio: 4 / 5;
+  border-radius: 24px;
+  /* Dwie warstwy tła: na wierzchu realne zdjęcie (--hero-img), pod spodem
+     gradient jako fallback / tło prześwitujące przy zdjęciach z przezroczystością. */
+  background-image: var(--hero-img), linear-gradient(160deg, rgba(41, 151, 170, 0.55), rgba(15, 23, 42, 0.2));
+  background-size: cover;
+  background-position: center;
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  box-shadow: var(--shadow);
+  overflow: hidden;
+}
+
+/* ==========================================================================
+   Karty zaufania / cechy
+   ========================================================================== */
+.features {
+  background: var(--bg-soft);
+}
+
+.feature-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 28px;
+}
+
+.feature-card {
+  background: #fff;
+  border-radius: var(--radius);
+  padding: 32px 28px;
+  border: 1px solid var(--border);
+  transition: transform 0.25s ease, box-shadow 0.25s ease;
+}
+
+.feature-card:hover {
+  transform: translateY(-6px);
+  box-shadow: var(--shadow);
+}
+
+.feature-icon {
+  width: 48px;
+  height: 48px;
+  border-radius: 12px;
+  background: var(--teal-light);
+  color: var(--teal-dark);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 20px;
+}
+
+.feature-card h3 {
+  font-size: 1.1rem;
+  margin-bottom: 10px;
+}
+
+.feature-card p {
+  font-size: 0.95rem;
+  margin-bottom: 0;
+}
+
+/* ==========================================================================
+   Sekcja O nas (podział grafika/tekst)
+   ========================================================================== */
+.about {
+  display: grid;
+  grid-template-columns: 0.9fr 1.1fr;
+  gap: 56px;
+  align-items: center;
+}
+
+.about-visual {
+  aspect-ratio: 1 / 1;
+  border-radius: 24px;
+  /* Widoczne tylko, dopóki obrazy karuzeli się ładują / gdyby jakiegoś zabrakło. */
+  background: linear-gradient(150deg, var(--teal-light), var(--bg-soft));
+  border: 1px solid var(--border);
+  position: relative;
+  overflow: hidden;
+}
+
+/* ==========================================================================
+   Karuzela (używana w sekcji "O nas") — logika w core/static/core/js/carousel.js.
+   .carousel-track przesuwa się o 100% szerokości na slajd; .carousel to
+   każdy .about-visual, .carousel-dots wypełnia się kropkami automatycznie z JS.
+   ========================================================================== */
+.carousel-track {
+  display: flex;
+  height: 100%;
+  transition: transform 0.5s ease;
+}
+
+.carousel-slide {
+  flex: 0 0 100%;
+  height: 100%;
+  margin: 0;
+}
+
+.carousel-slide img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+
+.carousel-btn {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 38px;
+  height: 38px;
+  border-radius: 50%;
+  border: none;
+  background: rgba(255, 255, 255, 0.9);
+  color: var(--navy);
+  font-size: 1.4rem;
+  line-height: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  box-shadow: var(--shadow);
+  transition: background 0.2s ease, transform 0.2s ease;
+}
+
+.carousel-btn:hover {
+  background: #ffffff;
+  transform: translateY(-50%) scale(1.06);
+}
+
+.carousel-btn.prev {
+  left: 14px;
+}
+
+.carousel-btn.next {
+  right: 14px;
+}
+
+.carousel-dots {
+  position: absolute;
+  bottom: 16px;
+  left: 0;
+  right: 0;
+  display: flex;
+  justify-content: center;
+  gap: 8px;
+}
+
+.carousel-dots button {
+  width: 8px;
+  height: 8px;
+  padding: 0;
+  border: none;
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.55);
+  cursor: pointer;
+  transition: width 0.2s ease, background 0.2s ease;
+}
+
+.carousel-dots button.is-active {
+  width: 22px;
+  background: #ffffff;
+}
+
+.about-content .eyebrow {
+  margin-bottom: 16px;
+}
+
+.about-list {
+  margin-top: 24px;
+  display: grid;
+  gap: 16px;
+}
+
+.about-list li {
+  display: flex;
+  gap: 12px;
+  align-items: flex-start;
+  font-size: 0.97rem;
+}
+
+.check {
+  flex: none;
+  width: 22px;
+  height: 22px;
+  border-radius: 50%;
+  background: var(--teal);
+  color: #fff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 0.75rem;
+  margin-top: 2px;
+}
+
+/* ==========================================================================
+   Oferta
+   ========================================================================== */
+.offer-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 28px;
+}
+
+.offer-card {
+  border-radius: var(--radius);
+  padding: 36px 28px;
+  border: 1px solid var(--border);
+  position: relative;
+  overflow: hidden;
+}
+
+.offer-card.highlight {
+  background: var(--navy);
+  color: #fff;
+  border-color: var(--navy);
+}
+
+.offer-card.highlight h3,
+.offer-card.highlight p {
+  color: #fff;
+}
+
+.offer-card.highlight p {
+  color: rgba(255, 255, 255, 0.7);
+}
+
+.offer-number {
+  font-family: "Outfit", sans-serif;
+  font-weight: 700;
+  font-size: 0.85rem;
+  color: var(--teal);
+  margin-bottom: 14px;
+  display: block;
+}
+
+.offer-card h3 {
+  font-size: 1.15rem;
+}
+
+/* Wariant kafelków-linków (wybór lokalizacji Polska/Teneryfa w sekcji
+   Oferta) — cała karta to <a>, więc dopisujemy display/hover/cień,
+   których .offer-card samo w sobie nie ma. */
+.location-grid {
+  grid-template-columns: repeat(2, 1fr);
+}
+
+.location-card {
+  display: block;
+  background: #fff;
+  transition: transform 0.25s ease, box-shadow 0.25s ease;
+}
+
+.location-card:hover {
+  transform: translateY(-6px);
+  box-shadow: var(--shadow);
+}
+
+.location-card-cta {
+  display: inline-block;
+  margin-top: 18px;
+  font-weight: 600;
+  font-size: 0.9rem;
+  color: var(--teal);
+}
+
+.location-card.highlight .location-card-cta {
+  color: #fff;
+}
+
+/* ==========================================================================
+   Galeria w stylu Airbnb — 1 duże zdjęcie + 4 małe w siatce 4 kolumn;
+   pozostałe zdjęcia (.hidden-tile) są niewidoczne w siatce, służą tylko
+   jako dodatkowe slajdy lightboksa (patrz core/static/core/js/lightbox.js).
+   ========================================================================== */
+.airbnb-gallery-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  grid-auto-rows: 160px;
+  gap: 8px;
+  border-radius: 20px;
+  overflow: hidden;
+}
+
+.airbnb-gallery-item {
+  position: relative;
+  display: block;
+  overflow: hidden;
+}
+
+.airbnb-gallery-item.main {
+  grid-column: span 2;
+  grid-row: span 2;
+}
+
+.airbnb-gallery-item img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+  transition: transform 0.4s ease, filter 0.3s ease;
+}
+
+.airbnb-gallery-item:hover img {
+  transform: scale(1.05);
+  filter: brightness(0.85);
+}
+
+.airbnb-gallery-item.hidden-tile {
+  display: none;
+}
+
+.airbnb-gallery-more {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: rgba(15, 23, 42, 0.55);
+  color: #fff;
+  font-weight: 600;
+  font-size: 0.95rem;
+  text-align: center;
+  padding: 12px;
+  opacity: 1;
+  transition: background 0.2s ease;
+}
+
+.airbnb-gallery-item:hover .airbnb-gallery-more {
+  background: rgba(15, 23, 42, 0.7);
+}
+
+/* ==========================================================================
+   Lightbox — pełnoekranowy podgląd zdjęć z galerii, sterowany przez
+   core/static/core/js/lightbox.js ([hidden] pokazuje/ukrywa całość).
+   ========================================================================== */
+.lightbox {
+  position: fixed;
+  inset: 0;
+  z-index: 1000;
+  background: rgba(15, 23, 42, 0.92);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 16px;
+  padding: 24px;
+}
+
+/* Bez tego "display: flex" wyżej wygrywałoby z domyślnym stylem atrybutu
+   [hidden] (który jest tylko "display: none" w arkuszu przeglądarki, więc
+   author-owy .lightbox go nadpisuje) — lightbox pokazywałby się od razu
+   po wejściu na stronę, zamiast dopiero po kliknięciu zdjęcia. */
+.lightbox[hidden] {
+  display: none;
+}
+
+.lightbox-figure {
+  margin: 0;
+  max-width: min(90vw, 1100px);
+  max-height: 85vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 12px;
+}
+
+.lightbox-img {
+  max-width: 100%;
+  max-height: 78vh;
+  object-fit: contain;
+  border-radius: 12px;
+  box-shadow: var(--shadow);
+}
+
+.lightbox-counter {
+  color: rgba(255, 255, 255, 0.75);
+  font-size: 0.9rem;
+}
+
+.lightbox-close,
+.lightbox-btn {
+  border: none;
+  background: rgba(255, 255, 255, 0.12);
+  color: #fff;
+  border-radius: 50%;
+  cursor: pointer;
+  transition: background 0.2s ease;
+}
+
+.lightbox-close:hover,
+.lightbox-btn:hover {
+  background: rgba(255, 255, 255, 0.25);
+}
+
+.lightbox-close {
+  position: absolute;
+  top: 20px;
+  right: 20px;
+  width: 44px;
+  height: 44px;
+  font-size: 1.4rem;
+  line-height: 1;
+}
+
+.lightbox-btn {
+  width: 48px;
+  height: 48px;
+  font-size: 1.6rem;
+  line-height: 1;
+  flex: none;
+}
+
+/* ==========================================================================
+   CTA
+   ========================================================================== */
+.cta {
+  background: linear-gradient(120deg, var(--navy), var(--navy-light));
+  color: #fff;
+  border-radius: 28px;
+  padding: 64px;
+  text-align: center;
+  margin: 0 24px;
+  max-width: calc(var(--container) - 48px);
+  margin-inline: auto;
+}
+
+.cta h2 {
+  color: #fff;
+  margin-bottom: 12px;
+}
+
+.cta p {
+  color: rgba(255, 255, 255, 0.72);
+  max-width: 520px;
+  margin: 0 auto 32px;
+}
+
+/* ==========================================================================
+   Kontakt
+   ========================================================================== */
+.contact {
+  background: var(--bg-soft);
+}
+
+.contact-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 48px;
+}
+
+.contact-info {
+  display: grid;
+  gap: 20px;
+  align-content: start;
+}
+
+.contact-item {
+  display: flex;
+  gap: 16px;
+  align-items: flex-start;
+  background: #fff;
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 20px;
+}
+
+.contact-item .feature-icon {
+  margin-bottom: 0;
+}
+
+.contact-item h4 {
+  font-size: 1rem;
+  margin-bottom: 4px;
+}
+
+.contact-item p {
+  margin-bottom: 0;
+  font-size: 0.92rem;
+}
+
+.contact-item p a {
+  color: var(--teal-dark);
+  font-weight: 600;
+  text-decoration: none;
+}
+
+.contact-item p a:hover {
+  text-decoration: underline;
+}
+
+.contact-form {
+  background: #fff;
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 32px;
+  display: grid;
+  gap: 16px;
+}
+
+.contact-form .field {
+  display: grid;
+  gap: 6px;
+}
+
+.contact-form label {
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: var(--text-dark);
+}
+
+.contact-form input,
+.contact-form textarea {
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  padding: 12px 14px;
+  font-family: inherit;
+  font-size: 0.95rem;
+  color: var(--text-dark);
+  background: #fbfcfd;
+}
+
+.contact-form input:focus,
+.contact-form textarea:focus {
+  outline: none;
+  border-color: var(--teal);
+  box-shadow: 0 0 0 3px rgba(41, 151, 170, 0.15);
+}
+
+.contact-form textarea {
+  resize: vertical;
+  min-height: 120px;
+}
+
+.field-optional {
+  font-weight: 400;
+  color: #94a3b8;
+  font-size: 0.8rem;
+}
+
+.field-error {
+  font-size: 0.8rem;
+  color: #dc2626;
+}
+
+/* Komunikaty django.contrib.messages po wysłaniu formularza kontaktowego. */
+.form-messages {
+  max-width: 640px;
+  margin: 0 auto 32px;
+}
+
+.form-message {
+  padding: 12px 18px;
+  border-radius: 10px;
+  font-size: 0.92rem;
+  font-weight: 600;
+}
+
+.form-message.success {
+  background: var(--teal-light);
+  color: var(--teal-dark);
+}
+
+.form-message.error {
+  background: #fee2e2;
+  color: #dc2626;
+}
+
+/* ==========================================================================
+   Lista ofert (core/oferta/lista.html) — kafelki jednej lokalizacji,
+   każdy linkuje do podstrony szczegółów tej oferty.
+   ========================================================================== */
+.offer-list {
+  padding: 64px 0 96px;
+}
+
+.offer-tiles {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 28px;
+  margin-top: 8px;
+}
+
+.offer-tile {
+  display: block;
+  background: #fff;
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  overflow: hidden;
+  transition: transform 0.25s ease, box-shadow 0.25s ease;
+}
+
+.offer-tile:hover {
+  transform: translateY(-6px);
+  box-shadow: var(--shadow);
+}
+
+.offer-tile-cover {
+  position: relative;
+  aspect-ratio: 4 / 3;
+  background: var(--bg-soft);
+  overflow: hidden;
+}
+
+.offer-tile-cover img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+
+/* Kolor zależny od statusu oferty — wartości to sloogi z Property.STATUS_CHOICES
+   (models.py), więc np. status="dostepny" daje klasę .status-dostepny. */
+.offer-tile-status {
+  position: absolute;
+  top: 12px;
+  left: 12px;
+  padding: 5px 12px;
+  border-radius: 999px;
+  font-size: 0.75rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.03em;
+  color: #fff;
+}
+
+.status-dostepny {
+  background: var(--teal);
+}
+
+.status-zarezerwowany {
+  background: #d97706;
+}
+
+.status-sprzedany {
+  background: #64748b;
+}
+
+.offer-tile-body {
+  padding: 22px;
+}
+
+.offer-tile-body h3 {
+  font-size: 1.1rem;
+  margin-bottom: 4px;
+}
+
+.offer-tile-address {
+  font-size: 0.85rem;
+  color: var(--text);
+  margin-bottom: 12px;
+}
+
+.offer-tile-meta {
+  display: flex;
+  gap: 10px;
+  flex-wrap: wrap;
+  margin-bottom: 18px;
+}
+
+.offer-tile-meta span {
+  background: var(--bg-soft);
+  padding: 4px 10px;
+  border-radius: 999px;
+  font-size: 0.8rem;
+  font-weight: 600;
+  color: var(--text-dark);
+}
+
+.offer-tile-footer {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding-top: 14px;
+  border-top: 1px solid var(--border);
+}
+
+.offer-tile-date {
+  font-size: 0.78rem;
+  color: #94a3b8;
+}
+
+.offer-tiles-empty {
+  text-align: center;
+  padding: 60px 20px;
+  color: var(--text);
+  background: var(--bg-soft);
+  border-radius: var(--radius);
+}
+
+/* ==========================================================================
+   Szczegóły oferty (core/oferta/detail.html) — nagłówek z ceną, pasek
+   parametrów, galeria (ta sama siatka/lightbox co na stronie głównej),
+   opis i udogodnienia.
+   ========================================================================== */
+.offer-detail {
+  padding: 64px 0 96px;
+}
+
+.offer-detail-head {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-end;
+  gap: 24px;
+  flex-wrap: wrap;
+  margin: 24px 0 32px;
+}
+
+.offer-detail-head h1 {
+  margin-top: 10px;
+  font-size: clamp(1.8rem, 3vw, 2.6rem);
+}
+
+.offer-detail-address {
+  color: var(--text);
+  font-size: 0.95rem;
+}
+
+/* .offer-tile-status jest position:absolute (myślana jako "naklejka" na
+   zdjęciu kafelka) — tutaj nie ma zdjęcia pod spodem, więc przywracamy
+   normalny przepływ, żeby plakietka pokazała się nad tytułem, a nie
+   uciekła do lewego górnego rogu strony. */
+.offer-detail-head .offer-tile-status {
+  position: static;
+  display: inline-block;
+  margin-bottom: 12px;
+}
+
+.offer-detail-price {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 12px;
+}
+
+.offer-detail-price strong {
+  font-family: "Outfit", sans-serif;
+  font-size: 1.6rem;
+  color: var(--text-dark);
+}
+
+.offer-detail-facts {
+  display: flex;
+  gap: 32px;
+  flex-wrap: wrap;
+  padding: 24px 0;
+  margin-bottom: 40px;
+  border-top: 1px solid var(--border);
+  border-bottom: 1px solid var(--border);
+}
+
+.offer-detail-facts div {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.offer-detail-facts strong {
+  font-family: "Outfit", sans-serif;
+  font-size: 1.3rem;
+  color: var(--text-dark);
+}
+
+.offer-detail-facts span {
+  font-size: 0.82rem;
+  color: #94a3b8;
+}
+
+.offer-detail-gallery {
+  margin-bottom: 48px;
+}
+
+/* Jedna z 4 sekcji opisowych oferty (Opis nieruchomości / Powierzchnia /
+   Zalety / Wyposażenie) — patrz core/oferta/detail.html. "Opis" i
+   "Powierzchnia" stoją pełną szerokością jedna pod drugą, "Zalety" i
+   "Wyposażenie" obok siebie w .offer-section-grid niżej. */
+.offer-section {
+  margin-bottom: 40px;
+}
+
+.offer-section h2 {
+  font-size: 1.3rem;
+  margin-bottom: 14px;
+}
+
+.offer-section p {
+  color: var(--text);
+}
+
+.offer-section-figure {
+  font-family: "Outfit", sans-serif;
+  font-size: 1.4rem;
+  font-weight: 600;
+  color: var(--text-dark);
+  margin-bottom: 8px;
+}
+
+.offer-section-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 40px;
+}
+
+.offer-section-grid .offer-section {
+  margin-bottom: 0;
+}
+
+.offer-section ul {
+  display: grid;
+  gap: 10px;
+}
+
+.offer-section li {
+  display: flex;
+  gap: 10px;
+  align-items: flex-start;
+  font-size: 0.95rem;
+  color: var(--text);
+}
+
+/* ==========================================================================
+   Baner zgody na cookies — logika w core/static/core/js/cookie-consent.js.
+   ========================================================================== */
+/* Pełnoekranowa nakładka (jak .lightbox) — półprzezroczyste tło za
+   wyśrodkowaną kartą z treścią. Znika dopiero po wyborze Akceptuję/Odrzuć. */
+.cookie-banner {
+  position: fixed;
+  inset: 0;
+  z-index: 1100;
+  background: rgba(15, 23, 42, 0.72);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 20px;
+}
+
+/* Bez tego "display: flex" wyżej wygrywałoby z domyślnym [hidden] —
+   ten sam problem, który już raz naprawiałem przy .lightbox. */
+.cookie-banner[hidden] {
+  display: none;
+}
+
+.cookie-banner-card {
+  background: var(--navy);
+  color: rgba(255, 255, 255, 0.85);
+  border-radius: 20px;
+  padding: 36px;
+  max-width: 460px;
+  width: 100%;
+  box-shadow: var(--shadow);
+  text-align: center;
+}
+
+.cookie-banner-card h2 {
+  color: #fff;
+  font-size: 1.3rem;
+  margin-bottom: 12px;
+}
+
+.cookie-banner-card p {
+  margin: 0 0 24px;
+  font-size: 0.92rem;
+  line-height: 1.6;
+}
+
+.cookie-banner-card a {
+  color: var(--teal);
+  font-weight: 600;
+}
+
+.cookie-banner-actions {
+  display: flex;
+  gap: 12px;
+  justify-content: center;
+}
+
+.cookie-banner-actions .btn {
+  flex: 1;
+  justify-content: center;
+}
+
+.cookie-btn-reject {
+  background: transparent;
+  border: 1px solid rgba(255, 255, 255, 0.3);
+  color: #fff;
+}
+
+.cookie-btn-reject:hover {
+  background: rgba(255, 255, 255, 0.1);
+}
+
+@media (max-width: 720px) {
+  .cookie-banner-card {
+    padding: 28px 24px;
+  }
+}
+
+/* ==========================================================================
+   Strony prawne (Polityka prywatności) — wąska kolumna tekstu, żeby długie
+   akapity dało się wygodnie czytać, plus numerowane nagłówki z ustawy.
+   ========================================================================== */
+.legal {
+  padding: 64px 0 96px;
+}
+
+.legal-content {
+  max-width: 760px;
+}
+
+.legal-back {
+  display: inline-block;
+  margin-bottom: 24px;
+  font-size: 0.9rem;
+  font-weight: 600;
+  color: var(--teal-dark);
+}
+
+.legal-content h1 {
+  font-size: clamp(1.8rem, 3vw, 2.4rem);
+  margin-top: 8px;
+}
+
+.legal-content h2 {
+  font-size: 1.3rem;
+  margin-top: 40px;
+}
+
+.legal-content h3 {
+  font-size: 1.05rem;
+  margin-top: 24px;
+}
+
+.legal-content p,
+.legal-content li {
+  color: var(--text);
+  font-size: 0.97rem;
+}
+
+.legal-content ul {
+  margin: 0 0 1em;
+  padding-left: 1.2em;
+  list-style: disc;
+}
+
+.legal-content a {
+  color: var(--teal-dark);
+  font-weight: 600;
+}
+
+.legal-content a:hover {
+  text-decoration: underline;
+}
+
+/* ==========================================================================
+   Stopka
+   ========================================================================== */
+.site-footer {
+  background: var(--navy);
+  color: rgba(255, 255, 255, 0.7);
+  padding: 56px 0 28px;
+}
+
+.footer-top {
+  display: grid;
+  grid-template-columns: 1.4fr 1fr 1fr 1fr;
+  gap: 32px;
+  padding-bottom: 40px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.footer-top .brand {
+  color: #fff;
+  margin-bottom: 12px;
+}
+
+.footer-col h4 {
+  color: #fff;
+  font-size: 0.95rem;
+  margin-bottom: 16px;
+}
+
+.footer-col ul {
+  display: grid;
+  gap: 10px;
+}
+
+.footer-col a {
+  font-size: 0.9rem;
+  color: rgba(255, 255, 255, 0.65);
+  transition: color 0.2s ease;
+}
+
+.footer-col a:hover {
+  color: var(--teal);
+}
+
+.footer-bottom {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding-top: 24px;
+  font-size: 0.85rem;
+  flex-wrap: wrap;
+  gap: 12px;
+}
+
+.footer-bottom a:hover {
+  color: var(--teal);
+  text-decoration: underline;
+}
+
+.social-links {
+  display: flex;
+  gap: 12px;
+}
+
+.social-links a {
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 0.8rem;
+  transition: 0.2s ease;
+}
+
+.social-links a:hover {
+  background: var(--teal);
+  border-color: var(--teal);
+}
+
+/* Wariant tych samych ikon na jasnym tle (karta "Media społecznościowe"
+   w sekcji Kontakt) — stopka jest ciemna więc tam .social-links a
+   dziedziczy jasny kolor z .site-footer; tutaj trzeba go ustawić ręcznie. */
+.contact-item .social-links {
+  margin-top: 6px;
+}
+
+.contact-item .social-links a {
+  border-color: var(--border);
+  color: var(--teal-dark);
+}
+
+.contact-item .social-links a:hover {
+  color: #ffffff;
+}
+
+/* ==========================================================================
+   Responsywność
+   Dwa progi: 960px (tablet — siatki z 3 kolumn robią się 2, hero staje
+   się jednokolumnowe) i 720px (telefon — wszystko w jednej kolumnie,
+   pojawia się menu-hamburger zamiast linków w poziomie).
+   ========================================================================== */
+@media (max-width: 960px) {
+  .hero .container {
+    grid-template-columns: 1fr;
+  }
+
+  .hero-visual {
+    aspect-ratio: 16 / 10;
+  }
+
+  .about,
+  .contact-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .feature-grid,
+  .offer-grid,
+  .offer-tiles {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  .offer-section-grid {
+    grid-template-columns: 1fr;
+    gap: 32px;
+  }
+
+  .footer-top {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+@media (max-width: 720px) {
+  section {
+    padding: 64px 0;
+  }
+
+  .nav-links {
+    display: none;
+    position: absolute;
+    top: 100%;
+    left: 0;
+    right: 0;
+    background: #fff;
+    flex-direction: column;
+    gap: 0;
+    padding: 8px 24px 16px;
+    border-bottom: 1px solid var(--border);
+  }
+
+  .nav-links.is-open {
+    display: flex;
+  }
+
+  .nav-links a {
+    padding: 12px 0;
+    border-bottom: 1px solid var(--border);
+  }
+
+  .nav-links a:last-child {
+    border-bottom: none;
+  }
+
+  .navbar {
+    position: relative;
+  }
+
+  .nav-toggle {
+    display: block;
+  }
+
+  .feature-grid,
+  .offer-grid,
+  .offer-tiles,
+  .footer-top {
+    grid-template-columns: 1fr;
+  }
+
+  .offer-detail-head {
+    align-items: flex-start;
+  }
+
+  .offer-detail-price {
+    align-items: flex-start;
+    width: 100%;
+  }
+
+  .airbnb-gallery-grid {
+    grid-template-columns: repeat(2, 1fr);
+    grid-auto-rows: 130px;
+  }
+
+  .airbnb-gallery-item.main {
+    grid-column: span 2;
+    grid-row: span 1;
+    aspect-ratio: 16 / 10;
+    height: auto;
+  }
+
+  .lightbox {
+    padding: 12px;
+    gap: 8px;
+  }
+
+  .lightbox-btn {
+    width: 38px;
+    height: 38px;
+    font-size: 1.3rem;
+  }
+
+  .cta {
+    padding: 40px 24px;
+  }
+
+  .hero-stats {
+    gap: 20px;
+  }
+}
