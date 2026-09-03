@@ -9,9 +9,12 @@ je do MEDIA_ROOT (media/oferty/...), bo tam admin trzyma zdjęcia ofert.
 
 Cena, powierzchnia i liczba pokoi zostają puste — to prawdziwe dane, które
 uzupełnia się ręcznie w panelu administratora. Opis to placeholder do
-podmiany. `alt_text` każdego zdjęcia jest generyczny (nie opisuje co
-dokładnie jest na zdjęciu) — dopracowanie tego w adminie polecam zrobić
-tylko dla zdjęć, które faktycznie trafią na widoczną stronę oferty.
+podmiany. `alt_text` każdego zdjęcia jest generyczny, ale ponumerowany
+("Apartament 3 na Teneryfie — zdjęcie 12 z 44") — nie opisuje dokładnie
+TEGO zdjęcia, ale każde ma inny tekst (ważne pod SEO — identyczny alt na
+kilkudziesięciu zdjęciach z rzędu wygląda źle). Jeśli chcesz dopracować
+opis pod konkretne, najważniejsze zdjęcia (np. okładkę), zrób to ręcznie
+w panelu — resztę (setki zdjęć) nie ma sensu opisywać z osobna.
 
 Użycie:
     python manage.py import_apartments
@@ -71,11 +74,17 @@ class Command(BaseCommand):
                 p for p in source_dir.iterdir() if p.suffix.lower() in SUPPORTED_EXTENSIONS
             )
 
+            total = len(photos)
             for index, photo_path in enumerate(photos):
                 with open(photo_path, "rb") as file_obj:
                     image = PropertyImage(
                         property=property_obj,
-                        alt_text=f"Wnętrze {title} na Teneryfie",
+                        # Numer w opisie — bez tego wszystkie zdjęcia jednego
+                        # apartamentu miałyby DOKŁADNIE ten sam alt, co jest
+                        # złe pod SEO (zduplikowana treść). To wciąż prosty,
+                        # automatyczny opis — nie ręczne opisywanie każdego
+                        # z osobna, na co przy setkach zdjęć nie ma szans.
+                        alt_text=f"{title} {property_obj.location_phrase()} — zdjęcie {index + 1} z {total}",
                         order=index,
                         is_cover=(index == 0),
                     )

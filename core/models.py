@@ -93,6 +93,19 @@ class Property(models.Model):
         zaznaczył — po prostu pierwsze zdjęcie w kolejności."""
         return self.images.filter(is_cover=True).first() or self.images.first()
 
+    # Polska odmiana: "w Polsce", ale "na Teneryfie" — różny przyimek I
+    # przypadek dla różnych miejsc, więc get_location_display() (zwraca
+    # mianownik: "Polska"/"Teneryfa") nie nadaje się wprost do zdania typu
+    # "Apartament X na {lokalizacja}". Używane w alt_text zdjęć (patrz
+    # core/management/commands/import_apartments.py i refresh_alt_text.py).
+    LOCATION_PHRASES = {
+        "polska": "w Polsce",
+        "teneryfa": "na Teneryfie",
+    }
+
+    def location_phrase(self):
+        return self.LOCATION_PHRASES.get(self.location, self.get_location_display())
+
     def amenities_list(self):
         """Rozbija pole `amenities` (jedna pozycja na linię) na listę do
         wyświetlenia w szablonie — puste linie są pomijane."""

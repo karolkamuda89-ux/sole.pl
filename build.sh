@@ -6,6 +6,7 @@
 #   - migrate: pomija migracje już zastosowane
 #   - ensure_superuser: pomija, jeśli konto już istnieje
 #   - import_apartments: pomija ofertę, jeśli już istnieje (patrz --force w kodzie)
+#   - refresh_alt_text: zawsze ustawia ten sam, przewidywalny tekst
 set -o errexit  # przerwij cały build, jeśli którykolwiek krok się nie powiedzie
 
 pip install -r requirements.txt
@@ -19,3 +20,4 @@ python manage.py collectstatic --noinput --ignore=raw --ignore="*.mp4"
 python manage.py migrate
 python manage.py ensure_superuser
 python manage.py import_apartments
+python manage.py refresh_alt_text
