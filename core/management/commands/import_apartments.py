@@ -7,6 +7,16 @@ Teneryfa) i podpina pod każdą wszystkie zdjęcia .webp z odpowiedniego
 folderu core/static/core/img/apN/ jako galerię (PropertyImage) — kopiując
 je do MEDIA_ROOT (media/oferty/...), bo tam admin trzyma zdjęcia ofert.
 
+WAŻNE — dlaczego to sprawdza pliki na dysku, nie tylko wpis w bazie:
+Na Render (i podobnych hostingach z efemerycznym dyskiem) baza danych
+(Postgres) przeżywa między deployami, ale PLIKI na dysku — nie. Gdyby ta
+komenda tylko sprawdzała "czy oferta 'Apartament 3' już jest w bazie", to
+po drugim deployu wpis by był (bo baza pamięta), ale prawdziwe pliki
+zdjęć by zniknęły (nowy, pusty dysk) — strona pokazywałaby złamane
+obrazki. Dlatego sprawdzamy, czy PLIK okładki faktycznie istnieje na
+dysku — jeśli nie, dogrywamy zdjęcia od nowa, nawet jeśli oferta w bazie
+już jest (jej pozostałe pola — cena, opis itd. — zostają nietknięte).
+
 Cena, powierzchnia i liczba pokoi zostają puste — to prawdziwe dane, które
 uzupełnia się ręcznie w panelu administratora. Opis to placeholder do
 podmiany. `alt_text` każdego zdjęcia jest generyczny, ale ponumerowany
@@ -18,7 +28,7 @@ w panelu — resztę (setki zdjęć) nie ma sensu opisywać z osobna.
 
 Użycie:
     python manage.py import_apartments
-    python manage.py import_apartments --force   # nadpisz istniejące oferty
+    python manage.py import_apartments --force   # dogrywa zdjęcia, nawet jeśli są już na dysku
 """
 
 from pathlib import Path
@@ -34,13 +44,13 @@ SUPPORTED_EXTENSIONS = {".webp"}
 
 
 class Command(BaseCommand):
-    help = "Tworzy w bazie oferty Apartament 1-7 na podstawie zdjęć z core/static/core/img/apN/."
+    help = "Tworzy w bazie oferty Apartament 1-7 i dogrywa ich zdjęcia, jeśli brakuje ich na dysku."
 
     def add_arguments(self, parser):
         parser.add_argument(
             "--force",
             action="store_true",
-            help="Usuń i utwórz od nowa ofertę, jeśli już istnieje (dotyczy też jej zdjęć).",
+            help="Skopiuj zdjęcia od nowa, nawet jeśli już są na dysku.",
         )
 
     def handle(self, *args, force, **options):
@@ -55,20 +65,30 @@ class Command(BaseCommand):
                 self.stderr.write(f"Pomijam {title} — nie znaleziono folderu {source_dir}")
                 continue
 
-            existing = Property.objects.filter(slug=slug).first()
-            if existing:
-                if not force:
-                    self.stdout.write(f"Pomijam {title} — już istnieje w bazie (użyj --force, by nadpisać).")
-                    continue
-                existing.delete()
-
-            property_obj = Property.objects.create(
-                title=title,
+            # get_or_create zamiast "sprawdź i utwórz" — jeśli oferta już
+            # istnieje (np. ktoś zmienił jej cenę/opis w panelu), zostaje
+            # BEZ ZMIAN. Nowa powstaje tylko przy pierwszym uruchomieniu.
+            property_obj, _ = Property.objects.get_or_create(
                 slug=slug,
-                location="teneryfa",
-                description="Opis apartamentu — do uzupełnienia w panelu administratora.",
-                status="dostepny",
+                defaults=dict(
+                    title=title,
+                    location="teneryfa",
+                    description="Opis apartamentu — do uzupełnienia w panelu administratora.",
+                    status="dostepny",
+                ),
             )
+
+            cover = property_obj.images.filter(is_cover=True).first()
+            cover_file_exists = bool(cover and cover.image and Path(cover.image.path).exists())
+
+            if cover_file_exists and not force:
+                self.stdout.write(f"Pomijam {title} — zdjęcia już są na dysku.")
+                continue
+
+            # Wpisy PropertyImage bez pliku pod spodem są bezużyteczne
+            # (złamany obrazek na stronie) — czyścimy je przed ponownym
+            # skopiowaniem. Sama oferta (Property) zostaje nietknięta.
+            property_obj.images.all().delete()
 
             photos = sorted(
                 p for p in source_dir.iterdir() if p.suffix.lower() in SUPPORTED_EXTENSIONS
@@ -91,5 +111,5 @@ class Command(BaseCommand):
                     image.image.save(photo_path.name, File(file_obj), save=True)
 
             self.stdout.write(
-                self.style.SUCCESS(f"{title}: utworzono ofertę i dodano {len(photos)} zdjęć.")
+                self.style.SUCCESS(f"{title}: dograno {len(photos)} zdjęć.")
             )
