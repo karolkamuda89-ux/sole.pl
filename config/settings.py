@@ -23,12 +23,14 @@ SECRET_KEY = os.environ.get(
 DEBUG = os.environ.get("DJANGO_DEBUG", "True") == "True"
 
 # Kropka na początku = dowolna subdomena. ".onrender.com" to Render,
-# ".ngrok-*" zostają na wypadek kolejnego szybkiego podglądu przez tunel.
-# Jeśli/jak dojdzie własna domena, dopisz ją tutaj (albo ustaw przez
-# zmienną środowiskową DJANGO_ALLOWED_HOSTS, oddzieloną przecinkami).
+# ".ngrok-*" zostają na wypadek kolejnego szybkiego podglądu przez tunel,
+# "sole.pl"/"www.sole.pl" to docelowa własna domena firmy (patrz
+# CSRF_TRUSTED_ORIGINS niżej — musi tam być identyczna lista, inaczej
+# logowanie do panelu admina spod tej domeny wygląda na atak CSRF).
 ALLOWED_HOSTS = [
     "localhost", "127.0.0.1", ".onrender.com",
     ".ngrok-free.app", ".ngrok-free.dev", ".ngrok.io", ".ngrok.dev",
+    "sole.pl", "www.sole.pl",
 ] + [h for h in os.environ.get("DJANGO_ALLOWED_HOSTS", "").split(",") if h]
 
 # Render (jak ngrok) sam obsługuje HTTPS, ale do Django przekazuje ruch
@@ -41,6 +43,7 @@ CSRF_TRUSTED_ORIGINS = [
     "https://*.onrender.com",
     "https://*.ngrok-free.app", "https://*.ngrok-free.dev",
     "https://*.ngrok.io", "https://*.ngrok.dev",
+    "https://sole.pl", "https://www.sole.pl",
 ]
 
 # Wymuszaj HTTPS/bezpieczne ciasteczka tylko na produkcji (DEBUG=False) —
