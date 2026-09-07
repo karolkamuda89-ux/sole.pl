@@ -1,7 +1,7 @@
 {% extends "core/base.html" %}
 {% load static %}
 
-{% block title %}{{ property.title }} — {{ property.get_location_display }}{% endblock %}
+{% block title %}{{ property.title }} — {{ property.get_location_display }} | Sole{% endblock %}
 {% block description %}{{ property.title }}, {{ property.get_location_display }}{% if property.area_m2 %}, {{ property.area_m2 }} m²{% endif %}{% if property.address %} — {{ property.address }}{% endif %}{% endblock %}
 
 {% comment %}
