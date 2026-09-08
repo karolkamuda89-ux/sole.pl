@@ -8,7 +8,7 @@ from django.shortcuts import get_object_or_404, redirect, render
 from django.urls import reverse
 
 from .forms import ContactForm
-from .models import Property
+from .models import GalleryPhoto, Property
 
 logger = logging.getLogger(__name__)
 
@@ -34,7 +34,20 @@ def home(request):
     else:
         form = ContactForm()
 
-    return render(request, "core/home.html", {"form": form})
+    # Kolejność (order) w adminie decyduje o układzie: 1. zdjęcie = duży
+    # kafelek, 2.-5. = małe kafelki w widocznej siatce, reszta = tylko
+    # dodatkowe slajdy w lightboksie (patrz core/templates/core/home.html).
+    gallery_photos = list(GalleryPhoto.objects.all())
+    return render(
+        request,
+        "core/home.html",
+        {
+            "form": form,
+            "gallery_main": gallery_photos[0] if gallery_photos else None,
+            "gallery_small": gallery_photos[1:5],
+            "gallery_extra": gallery_photos[5:],
+        },
+    )
 
 
 def _send_contact_notification(contact_message):

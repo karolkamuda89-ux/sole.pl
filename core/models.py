@@ -12,9 +12,32 @@ logger = logging.getLogger(__name__)
 # Te same wartości domyślne co core/management/commands/optimize_images.py
 # (skrypt do core/static/core/img/raw/) — zdjęcia wgrywane przez panel
 # admina przechodzą tę samą obróbkę, tylko automatycznie przy zapisie,
-# patrz PropertyImage.save() niżej.
+# patrz convert_uploaded_image_to_webp() niżej.
 UPLOAD_MAX_WIDTH = 1920
 UPLOAD_WEBP_QUALITY = 82
+
+
+def convert_uploaded_image_to_webp(image_field):
+    """Dociska zdjęcie do UPLOAD_MAX_WIDTH i zwraca jego wersję WebP jako
+    ContentFile — wspólna logika dla PropertyImage i GalleryPhoto, żeby nie
+    trzymać dwóch kopii tego samego kodu konwersji Pillow."""
+    image_field.seek(0)
+    img = Image.open(image_field)
+    img = ImageOps.exif_transpose(img)
+
+    if img.width > UPLOAD_MAX_WIDTH:
+        ratio = UPLOAD_MAX_WIDTH / img.width
+        img = img.resize((UPLOAD_MAX_WIDTH, round(img.height * ratio)), Image.LANCZOS)
+
+    if img.mode not in ("RGB", "RGBA"):
+        img = img.convert("RGB")
+
+    buffer = io.BytesIO()
+    img.save(buffer, "WEBP", quality=UPLOAD_WEBP_QUALITY, method=6)
+    buffer.seek(0)
+
+    new_name = f"{Path(image_field.name).stem}.webp"
+    return ContentFile(buffer.read(), name=new_name)
 
 
 class Property(models.Model):
@@ -45,7 +68,7 @@ class Property(models.Model):
     # linię, patrz *_list() niżej). Puste pole po prostu nie pokazuje
     # swojej sekcji na stronie.
     description = models.TextField("Opis nieruchomości", blank=True)
-    price = models.DecimalField("Cena (EUR)", max_digits=10, decimal_places=2, null=True, blank=True)
+    price = models.DecimalField("Cena (PLN)", max_digits=10, decimal_places=2, null=True, blank=True)
     area_m2 = models.DecimalField("Powierzchnia (m²)", max_digits=6, decimal_places=1, null=True, blank=True)
     area_details = models.TextField(
         "Powierzchnia — opis", blank=True,
@@ -156,28 +179,48 @@ class PropertyImage(models.Model):
 
     def _convert_image_to_webp(self):
         try:
-            self.image.seek(0)
-            img = Image.open(self.image)
-            img = ImageOps.exif_transpose(img)
-
-            if img.width > UPLOAD_MAX_WIDTH:
-                ratio = UPLOAD_MAX_WIDTH / img.width
-                img = img.resize((UPLOAD_MAX_WIDTH, round(img.height * ratio)), Image.LANCZOS)
-
-            if img.mode not in ("RGB", "RGBA"):
-                img = img.convert("RGB")
-
-            buffer = io.BytesIO()
-            img.save(buffer, "WEBP", quality=UPLOAD_WEBP_QUALITY, method=6)
-            buffer.seek(0)
-
-            new_name = f"{Path(self.image.name).stem}.webp"
-            self.image = ContentFile(buffer.read(), name=new_name)
+            self.image = convert_uploaded_image_to_webp(self.image)
         except Exception:
             # Nietypowy/uszkodzony plik — zamiast wywalać zapis całego
             # formularza w adminie błędem 500, zostawiamy oryginał
             # nieprzekonwertowany i tylko odnotowujemy to w logu.
             logger.exception("Nie udało się przekonwertować zdjęcia oferty na WebP.")
+
+
+def gallery_photo_upload_to(instance, filename):
+    return f"galeria/{filename}"
+
+
+class GalleryPhoto(models.Model):
+    """Zdjęcia sekcji "Zobacz nasze realizacje" na stronie głównej (patrz
+    core/templates/core/home.html, .airbnb-gallery-grid) — edytowalne z
+    panelu admina zamiast na sztywno w szablonie. Kolejność (`order`)
+    decyduje o układzie: 1. zdjęcie = duży kafelek, 2.-5. = małe kafelki
+    w widocznej siatce, kolejne = tylko dodatkowe slajdy w lightboksie
+    (widoczne po kliknięciu "Pokaż wszystkie zdjęcia")."""
+
+    image = models.ImageField("Zdjęcie", upload_to=gallery_photo_upload_to)
+    alt_text = models.CharField("Opis alternatywny (SEO)", max_length=250)
+    order = models.PositiveIntegerField(
+        "Kolejność", default=0,
+        help_text="0 = duże zdjęcie, 1-4 = małe kafelki w siatce, wyższe = tylko w powiększeniu.",
+    )
+
+    class Meta:
+        verbose_name = "Zdjęcie galerii (strona główna)"
+        verbose_name_plural = "Zdjęcia galerii (strona główna)"
+        ordering = ["order", "id"]
+
+    def __str__(self):
+        return self.alt_text or self.image.name
+
+    def save(self, *args, **kwargs):
+        if self.image and not self.image.name.lower().endswith(".webp"):
+            try:
+                self.image = convert_uploaded_image_to_webp(self.image)
+            except Exception:
+                logger.exception("Nie udało się przekonwertować zdjęcia galerii na WebP.")
+        super().save(*args, **kwargs)
 
 
 class ContactMessage(models.Model):

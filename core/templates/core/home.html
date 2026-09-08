@@ -207,47 +207,33 @@
       </div>
 
       {% comment %}
-        10 zdjęć, po jednym z każdego apartamentu (ap1–ap7 + 3 dodatkowe),
-        ręcznie wyselekcjonowane jako najbardziej reprezentacyjne. Widoczne
-        jest tylko pierwszych 5 (duże + 2x2), reszta otwiera się w lightboxie
-        po kliknięciu — logika w core/static/core/js/lightbox.js, która sama
-        odczytuje wszystkie <img> w .airbnb-gallery-grid (nie trzeba nic
-        dopisywać w JS przy zmianie zdjęć, wystarczy podmienić <img>/alt tutaj).
-        Każdy alt opisuje realną treść zdjęcia — pod SEO i czytniki ekranu.
+        Zdjęcia edytowalne w panelu admina (sekcja "Zdjęcia galerii (strona
+        główna)") — kolejność (order) decyduje o układzie: 1. = duży
+        kafelek (gallery_main), 2.-5. = małe kafelki w widocznej siatce
+        (gallery_small), reszta = tylko dodatkowe slajdy w lightboxie
+        (gallery_extra), logika w core/static/core/js/lightbox.js, która
+        sama odczytuje wszystkie <img> w .airbnb-gallery-grid — nic tu nie
+        trzeba dopisywać w JS przy zmianie zdjęć w adminie. Widok:
+        core/views.py (home), dane: core/models.py (GalleryPhoto).
       {% endcomment %}
       <div class="airbnb-gallery-grid">
-        <a href="#" class="airbnb-gallery-item main">
-          <img src="{% static 'core/img/ap1/IMG-20260816-WA0000.webp' %}" alt="Elegancki salon z okrągłym czarnym stołem, tapicerowanymi fotelami i marmurową ścianą w apartamencie na Teneryfie">
-        </a>
-        <a href="#" class="airbnb-gallery-item">
-          <img src="{% static 'core/img/ap4/01.webp' %}" alt="Przestronny, jasny salon połączony z kuchnią w nowoczesnym wykończeniu" loading="lazy">
-        </a>
-        <a href="#" class="airbnb-gallery-item">
-          <img src="{% static 'core/img/ap3/IMG-20260709-WA0000.webp' %}" alt="Umeblowany taras z fotelami wypoczynkowymi, stolikiem i zielenią w donicach" loading="lazy">
-        </a>
-        <a href="#" class="airbnb-gallery-item">
-          <img src="{% static 'core/img/ap2/IMG-20251208-WA0003.webp' %}" alt="Luksusowa łazienka wykończona beżowym marmurem, z owalną umywalką i złotą baterią" loading="lazy">
-        </a>
-        <a href="#" class="airbnb-gallery-item">
-          <img src="{% static 'core/img/ap7/IMG-20260813-WA0016.webp' %}" alt="Taras na dachu o zachodzie słońca z widokiem na góry Teneryfy i leżakami" loading="lazy">
-          <span class="airbnb-gallery-more">Pokaż wszystkie zdjęcia</span>
-        </a>
-        {% comment %} Poniższe są tylko w lightboksie (nie mieszczą się w widocznej siatce 1+4). {% endcomment %}
-        <a href="#" class="airbnb-gallery-item hidden-tile">
-          <img src="{% static 'core/img/ap6/IMG-20260710-WA0000.webp' %}" alt="Nowoczesna kuchnia z orzechową zabudową i okrągłym stołem jadalnym" loading="lazy">
-        </a>
-        <a href="#" class="airbnb-gallery-item hidden-tile">
-          <img src="{% static 'core/img/ap3/IMG-20260709-WA0010.webp' %}" alt="Stylowa jadalnia z designerską lampą sufitową i ciemnym okrągłym stołem" loading="lazy">
-        </a>
-        <a href="#" class="airbnb-gallery-item hidden-tile">
-          <img src="{% static 'core/img/ap5/IMG-20260802-WA0010.webp' %}" alt="Widok z góry na przestronny taras apartamentu z bujną roślinnością" loading="lazy">
-        </a>
-        <a href="#" class="airbnb-gallery-item hidden-tile">
-          <img src="{% static 'core/img/ap6/IMG-20260710-WA0015.webp' %}" alt="Zadaszony taras wypoczynkowy z widokiem na sypialnię apartamentu" loading="lazy">
-        </a>
-        <a href="#" class="airbnb-gallery-item hidden-tile">
-          <img src="{% static 'core/img/ap7/IMG-20260813-WA0020.webp' %}" alt="Elegancka łazienka z okrągłym lustrem i przeszkloną kabiną prysznicową" loading="lazy">
-        </a>
+        {% if gallery_main %}
+          <a href="#" class="airbnb-gallery-item main">
+            <img src="{{ gallery_main.image.url }}" alt="{{ gallery_main.alt_text }}">
+          </a>
+        {% endif %}
+        {% for photo in gallery_small %}
+          <a href="#" class="airbnb-gallery-item">
+            <img src="{{ photo.image.url }}" alt="{{ photo.alt_text }}" loading="lazy">
+            {% if forloop.last %}<span class="airbnb-gallery-more">Pokaż wszystkie zdjęcia</span>{% endif %}
+          </a>
+        {% endfor %}
+        {% comment %} Poniższe są tylko w lightboxie (nie mieszczą się w widocznej siatce 1+4). {% endcomment %}
+        {% for photo in gallery_extra %}
+          <a href="#" class="airbnb-gallery-item hidden-tile">
+            <img src="{{ photo.image.url }}" alt="{{ photo.alt_text }}" loading="lazy">
+          </a>
+        {% endfor %}
       </div>
     </div>
   </section>

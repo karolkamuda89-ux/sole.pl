@@ -132,6 +132,10 @@ AUTH_PASSWORD_VALIDATORS = [
 
 LANGUAGE_CODE = "pl"
 
+# Ceny w PLN wypisywane z spacją co 3 cyfry (450 000 zamiast 450000) —
+# Django samo dobiera separator wg LANGUAGE_CODE (dla pl to spacja).
+USE_THOUSAND_SEPARATOR = True
+
 TIME_ZONE = "Europe/Warsaw"
 
 USE_I18N = True

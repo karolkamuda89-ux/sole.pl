@@ -23,5 +23,6 @@ python manage.py migrate
 python manage.py ensure_superuser
 python manage.py import_apartments
 python manage.py refresh_alt_text
+python manage.py import_gallery_photos
 
 exec gunicorn config.wsgi:application

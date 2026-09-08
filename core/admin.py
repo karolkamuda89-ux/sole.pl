@@ -1,7 +1,7 @@
 from django.contrib import admin
 from django.utils.html import format_html
 
-from .models import ContactMessage, Property, PropertyImage
+from .models import ContactMessage, GalleryPhoto, Property, PropertyImage
 
 
 class PropertyImageInline(admin.TabularInline):
@@ -71,6 +71,28 @@ class PropertyAdmin(admin.ModelAdmin):
             "fields": ("amenities",),
         }),
     )
+
+
+@admin.register(GalleryPhoto)
+class GalleryPhotoAdmin(admin.ModelAdmin):
+    """Zdjęcia sekcji "Zobacz nasze realizacje" na stronie głównej —
+    kolejność decyduje o układzie (patrz help_text pola order w modelu),
+    dlatego jest edytowalna wprost na liście, bez wchodzenia w każdy wpis."""
+
+    list_display = ("preview", "alt_text", "order")
+    list_editable = ("order",)
+    list_display_links = ("alt_text",)
+    ordering = ("order", "id")
+
+    def preview(self, obj):
+        if obj.image:
+            return format_html(
+                '<img src="{}" loading="lazy" style="height:60px;border-radius:6px;object-fit:cover;">',
+                obj.image.url,
+            )
+        return "—"
+
+    preview.short_description = "Podgląd"
 
 
 @admin.register(ContactMessage)
