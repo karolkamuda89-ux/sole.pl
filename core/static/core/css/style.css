@@ -217,6 +217,14 @@ section {
   font-weight: 700;
 }
 
+/* Logo w nagłówku (SVG wektorowe, patrz base.html) — wysokość dobrana pod
+   pasek nawigacji, szerokość skaluje się proporcjonalnie (viewBox 620x284). */
+.brand-logo {
+  height: 42px;
+  width: auto;
+  display: block;
+}
+
 .nav-links {
   display: flex;
   align-items: center;
