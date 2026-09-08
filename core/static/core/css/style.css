@@ -1505,9 +1505,16 @@ section {
 
   .airbnb-gallery-item.main {
     grid-column: span 2;
-    grid-row: span 1;
-    aspect-ratio: 16 / 10;
-    height: auto;
+    /* span 3 (zamiast poprzedniego span 1 + aspect-ratio: 16/10) — duże
+       zdjęcie w tej siatce (core/static/core/img/ap1/IMG-20260816-WA0000.webp)
+       jest pionowe (910×1358); wymuszony poziomy kadr 16:10 ucinał połowę
+       jego wysokości. Rozwiązaniem NIE jest aspect-ratio na tym elemencie —
+       to tylko rozciąga kafelek ponad wysokość jednego wiersza siatki
+       (grid-auto-rows: 130px), a kolejne kafelki z następnego rzędu i tak
+       renderują się na nim, zasłaniając dół (sprawdzone). Zamiast tego
+       kafelek zajmuje więcej WIERSZY siatki (3 × 130px = 390px), co daje
+       proporcję bliską oryginałowi zdjęcia bez łamania układu grida. */
+    grid-row: span 3;
   }
 
   .lightbox {
