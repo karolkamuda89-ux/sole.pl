@@ -6,8 +6,9 @@
 {% comment %}
   Treść przeniesiona z t1.sole.pl/polityka-prywatnosci/ (ta sama firma,
   te same dane rejestrowe) — dostosowałem tylko punkt 11.6 (narzędzia
-  cookies), bo na oryginale było to niedokończone/placeholder, a na tym
-  serwisie na razie nie ma wdrożonych żadnych narzędzi analitycznych.
+  cookies), bo na oryginale było to niedokończone/placeholder. Meta Pixel
+  jest aktywny (META_PIXEL_ID ustawiony w Render) i ładuje się tylko po
+  zgodzie w bannerze cookies — patrz core/static/core/js/cookie-consent.js.
   Jeśli dodamy np. Google Analytics, trzeba będzie zaktualizować ten punkt.
 {% endcomment %}
 {% block content %}
