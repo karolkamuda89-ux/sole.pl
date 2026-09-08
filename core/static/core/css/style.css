@@ -170,6 +170,17 @@ section {
   border-bottom: 1px solid var(--border);
 }
 
+/* Sekcje, do których skacze się linkiem "#kotwica" z menu (base.html) —
+   bez tego przeglądarka wyrównuje górę sekcji do górnej krawędzi okna,
+   a sticky nagłówek ją zasłania (nagłówek zostaje NAD sekcją, bo jest
+   position: sticky, nie częścią normalnego przepływu strony). */
+#o-nas,
+#oferta,
+#galeria,
+#kontakt {
+  scroll-margin-top: 90px;
+}
+
 .navbar {
   display: flex;
   align-items: center;
