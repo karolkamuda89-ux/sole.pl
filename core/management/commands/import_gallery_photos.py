@@ -2,23 +2,25 @@
 Komenda: python manage.py import_gallery_photos
 
 Po co: sekcja "Zobacz nasze realizacje" na stronie głównej (core/models.py:
-GalleryPhoto) jest teraz w pełni edytowalna w panelu /admin/, ale przy
-pierwszym uruchomieniu strony tabela jest pusta — ta komenda wstawia
-startowy zestaw 10 zdjęć (to, co wcześniej było na sztywno wpisane w
-szablonie core/templates/core/home.html), żeby galeria od razu wyglądała
-dobrze, zanim ktokolwiek zacznie ją edytować w panelu.
+GalleryPhoto) jest w pełni edytowalna w panelu /admin/. Ta komenda pilnuje,
+żeby startowy zestaw 10 zdjęć (to, co wcześniej było na sztywno wpisane w
+core/templates/core/home.html) zawsze faktycznie ISTNIAŁ NA DYSKU — na
+Render dysk jest efemeryczny i znika przy KAŻDYM deployu, ale wiersze w
+Postgresie zostają, więc bez tego po drugim deployu strona pokazywałaby
+złamane obrazki (dokładnie to, co się stało: zaraz po wdrożeniu galerii
+działała, a po kolejnym, niezwiązanym deployu — pliki zniknęły z dysku,
+a komenda w starej wersji tylko sprawdzała "czy tabela jest pusta", więc
+nic nie naprawiała).
 
-WAŻNE — dlaczego to NIE jest self-healing jak import_apartments:
-Property ma stabilną tożsamość (slug), więc import_apartments może
-bezpiecznie podmieniać same zdjęcia bez ruszania reszty danych oferty.
-GalleryPhoto to płaska lista bez takiej tożsamości — gdyby ta komenda przy
-KAŻDYM starcie sprawdzała "czy pliki są na dysku" i w razie braku czyściła
-tabelę, wywaliłaby też zdjęcia, które ktoś ręcznie dodał w adminie (a nie
-tylko te ze startowego zestawu). Dlatego działa tylko RAZ — jeśli w tabeli
-jest już cokolwiek, zostawia to w spokoju, nawet jeśli pliki akurat zniknęły
-z dysku (to ten sam, znany kompromis efemerycznego dysku na Render co przy
-zdjęciach ofert — patrz komentarz przy MEDIA_ROOT w settings.py). W takim
-wypadku trzeba po prostu wgrać brakujące zdjęcie ponownie w panelu.
+Jak to NIE psuje zdjęć dodanych ręcznie w adminie:
+Naprawiamy TYLKO wiersze, które nadal wyglądają jak nietknięty starter —
+czyli mają dokładnie taki `order` i `alt_text` jak w STARTER_PHOTOS poniżej.
+Jeśli admin podmienił zdjęcie na danej pozycji (inny plik, ale zwłaszcza
+inny opis — w praktyce zawsze się różni) albo dodał zupełnie nowe wiersze,
+te NIE są ruszane, nawet jeśli akurat brakuje im pliku na dysku (to ten sam
+kompromis efemerycznego dysku co przy zdjęciach ofert — trzeba by wtedy
+wgrać zdjęcie ponownie w panelu, nic nie da się z tym zrobić automatycznie,
+bo oryginalne bajty custom zdjęcia istniały tylko na wymazanym dysku).
 """
 
 from pathlib import Path
@@ -45,26 +47,44 @@ STARTER_PHOTOS = [
 
 
 class Command(BaseCommand):
-    help = "Wstawia startowy zestaw zdjęć galerii strony głównej, jeśli tabela jest jeszcze pusta."
+    help = "Dogrywa brakujące pliki startowego zestawu zdjęć galerii strony głównej."
 
     def handle(self, *args, **options):
-        if GalleryPhoto.objects.exists():
-            self.stdout.write(
-                "Galeria strony głównej ma już zdjęcia (panel admina jest tu źródłem "
-                "prawdy) — pomijam."
-            )
-            return
-
         img_root = Path(settings.BASE_DIR) / "core" / "static" / "core" / "img"
+        existing = {
+            (p.order, p.alt_text): p for p in GalleryPhoto.objects.all()
+        }
+
+        healed = 0
         created = 0
         for order, rel_path, alt_text in STARTER_PHOTOS:
             source_path = img_root / rel_path
+            match = existing.get((order, alt_text))
+
+            if match:
+                if match.image and Path(match.image.path).exists():
+                    continue  # nietknięty starter, plik jest na dysku — nic do zrobienia
+                photo = match
+                action = "Naprawiono"
+                healed += 1
+            else:
+                if GalleryPhoto.objects.filter(order=order).exists():
+                    # Ktoś w adminie podmienił zdjęcie/opis na tej pozycji —
+                    # to już nie jest nietknięty starter, zostawiamy w spokoju.
+                    continue
+                photo = GalleryPhoto(order=order)
+                action = "Dograno"
+                created += 1
+
             if not source_path.exists():
                 self.stderr.write(f"Pomijam — nie znaleziono {source_path}")
                 continue
-            with open(source_path, "rb") as file_obj:
-                photo = GalleryPhoto(alt_text=alt_text, order=order)
-                photo.image.save(source_path.name, File(file_obj), save=True)
-            created += 1
 
-        self.stdout.write(self.style.SUCCESS(f"Galeria strony głównej: dograno {created} zdjęć."))
+            photo.alt_text = alt_text
+            with open(source_path, "rb") as file_obj:
+                photo.image.save(source_path.name, File(file_obj), save=True)
+            self.stdout.write(f"{action}: pozycja {order} — {alt_text[:50]}")
+
+        self.stdout.write(self.style.SUCCESS(
+            f"Galeria strony głównej: naprawiono {healed}, dograno nowych {created}."
+        ))
