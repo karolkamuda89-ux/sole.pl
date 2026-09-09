@@ -190,6 +190,16 @@ class PropertyImage(models.Model):
             self._convert_image_to_webp()
         super().save(*args, **kwargs)
 
+        # Tylko JEDNO zdjęcie główne na ofertę — bez tego zaznaczenie nowego
+        # "Zdjęcie główne" bez ręcznego odznaczenia starego dawało DWA
+        # wpisy z is_cover=True, a Property.cover_image i tak wybierał ten
+        # z niższym `order`/id, czyli często wciąż stary. Odznaczamy resztę
+        # PO zapisie (nie przed), żeby to zdjęcie na pewno już miało nadane id.
+        if self.is_cover:
+            PropertyImage.objects.filter(property=self.property, is_cover=True).exclude(
+                pk=self.pk
+            ).update(is_cover=False)
+
     def _convert_image_to_webp(self):
         try:
             self.image = convert_uploaded_image_to_webp(self.image)
