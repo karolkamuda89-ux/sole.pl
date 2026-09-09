@@ -216,18 +216,6 @@ section {
   transform: translateY(-2px);
 }
 
-.brand-mark {
-  width: 38px;
-  height: 38px;
-  border-radius: 10px;
-  background: linear-gradient(135deg, var(--teal), var(--navy));
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  color: #fff;
-  font-weight: 700;
-}
-
 /* Logo w nagłówku (SVG wektorowe, patrz base.html) — wysokość dobrana pod
    pasek nawigacji, szerokość skaluje się proporcjonalnie (viewBox 620x284). */
 .brand-logo {

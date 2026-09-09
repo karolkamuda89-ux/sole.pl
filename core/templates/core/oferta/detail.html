@@ -26,7 +26,7 @@
       </div>
       <div class="offer-detail-price">
         {% if property.price %}
-          <strong>{{ property.price|floatformat:0 }} zł</strong>
+          <strong>{{ property.price|floatformat:0 }} {{ property.currency_symbol }}</strong>
         {% else %}
           <strong>Cena na zapytanie</strong>
         {% endif %}

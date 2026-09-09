@@ -40,7 +40,7 @@
               <div class="offer-tile-meta">
                 {% if property.area_m2 %}<span>{{ property.area_m2 }} m²</span>{% endif %}
                 {% if property.rooms %}<span>{{ property.rooms }} pok.</span>{% endif %}
-                {% if property.price %}<span>{{ property.price|floatformat:0 }} zł</span>{% else %}<span>Cena na zapytanie</span>{% endif %}
+                {% if property.price %}<span>{{ property.price|floatformat:0 }} {{ property.currency_symbol }}</span>{% else %}<span>Cena na zapytanie</span>{% endif %}
               </div>
 
               <div class="offer-tile-footer">

@@ -33,12 +33,12 @@ class PropertyImageInline(admin.TabularInline):
 
 @admin.register(Property)
 class PropertyAdmin(admin.ModelAdmin):
-    list_display = ("title", "location", "price", "area_m2", "rooms", "status", "is_published")
-    # Cenę (i te dwa pola) da się edytować wprost na liście ofert — bez
+    list_display = ("title", "location", "price", "currency", "area_m2", "rooms", "status", "is_published")
+    # Cenę (i te pola) da się edytować wprost na liście ofert — bez
     # wchodzenia w każdą osobno. Uwaga: pole editable nie może być pierwsze
     # w list_display (Django wymaga, żeby pierwsza kolumna była linkiem
     # do formularza), stąd "title" zostaje samym linkiem.
-    list_editable = ("price", "area_m2", "rooms")
+    list_editable = ("price", "currency", "area_m2", "rooms")
     list_filter = ("location", "status", "is_published")
     search_fields = ("title", "description")
     # Slug uzupełnia się sam w adminie na podstawie tytułu (JS w przeglądarce) —
@@ -56,7 +56,7 @@ class PropertyAdmin(admin.ModelAdmin):
             "fields": ("title", "slug", "location", "address", "status", "is_published"),
         }),
         ("Parametry", {
-            "fields": ("price", "area_m2", "rooms", "bathrooms"),
+            "fields": ("price", "currency", "area_m2", "rooms", "bathrooms"),
         }),
         ("Opis nieruchomości", {
             "fields": ("description",),

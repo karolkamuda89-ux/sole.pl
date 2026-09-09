@@ -54,6 +54,11 @@ class Property(models.Model):
         ("zarezerwowany", "Zarezerwowany"),
         ("sprzedany", "Sprzedany"),
     ]
+    CURRENCY_CHOICES = [
+        ("PLN", "PLN (zł)"),
+        ("EUR", "EUR (€)"),
+    ]
+    CURRENCY_SYMBOLS = {"PLN": "zł", "EUR": "€"}
 
     title = models.CharField("Tytuł", max_length=200)
     # Puste przy tworzeniu w kodzie (patrz save()) — w adminie wypełnia się
@@ -68,7 +73,8 @@ class Property(models.Model):
     # linię, patrz *_list() niżej). Puste pole po prostu nie pokazuje
     # swojej sekcji na stronie.
     description = models.TextField("Opis nieruchomości", blank=True)
-    price = models.DecimalField("Cena (PLN)", max_digits=10, decimal_places=2, null=True, blank=True)
+    price = models.DecimalField("Cena", max_digits=10, decimal_places=2, null=True, blank=True)
+    currency = models.CharField("Waluta", max_length=3, choices=CURRENCY_CHOICES, default="PLN")
     area_m2 = models.DecimalField("Powierzchnia (m²)", max_digits=6, decimal_places=1, null=True, blank=True)
     area_details = models.TextField(
         "Powierzchnia — opis", blank=True,
@@ -128,6 +134,13 @@ class Property(models.Model):
 
     def location_phrase(self):
         return self.LOCATION_PHRASES.get(self.location, self.get_location_display())
+
+    @property
+    def currency_symbol(self):
+        """Symbol do wyświetlenia obok ceny na stronie (patrz oferta/lista.html
+        i oferta/detail.html) — zamiast powtarzać ten sam if/else w dwóch
+        szablonach, jedno miejsce decyduje, jak wygląda dana waluta."""
+        return self.CURRENCY_SYMBOLS.get(self.currency, self.currency)
 
     def amenities_list(self):
         """Rozbija pole `amenities` (jedna pozycja na linię) na listę do
