@@ -224,6 +224,14 @@ section {
   display: block;
 }
 
+/* Logo w stopce — ten sam SVG co w nagłówku (.brand-logo), ale BEZ
+   teal-owej pigułki (.brand) — samo białe logo na granatowym tle
+   stopki wystarczy, dodatkowe tło tylko dublowałoby akcent koloru. */
+.footer-brand {
+  display: inline-block;
+  margin-bottom: 12px;
+}
+
 .nav-links {
   display: flex;
   align-items: center;
