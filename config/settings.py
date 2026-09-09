@@ -61,6 +61,7 @@ INSTALLED_APPS = [
     "django.contrib.sessions",
     "django.contrib.messages",
     "django.contrib.staticfiles",
+    "storages",  # trwały storage zdjęć (Cloudflare R2) — patrz STORAGES niżej
     "core",  # nasza aplikacja ze stroną główną
 ]
 
@@ -176,15 +177,46 @@ STORAGES = {
 # tu przez formularze w panelu, a nie są częścią kodu strony. media/ jest
 # w .gitignore (jak db.sqlite3) — obraz startowy odtwarza je z core/static/
 # przez `python manage.py import_apartments`.
-#
-# UWAGA na Render (darmowy plan): dysk jest efemeryczny, więc nowe zdjęcia
-# wgrane przez panel PO wdrożeniu znikną przy kolejnym redeployu. Zdjęcia
-# 7 apartamentów wgrane na starcie (przez import_apartments w czasie builda)
-# przetrwają do następnego deployu, ale nie dłużej. Docelowe rozwiązanie to
-# przeniesienie MEDIA na zewnętrzny storage (np. Cloudflare R2 / S3) —
-# osobny temat na później, gdy strona realnie zacznie żyć.
 MEDIA_URL = "media/"
 MEDIA_ROOT = BASE_DIR / "media"
+
+# ==========================================================================
+# Trwały storage zdjęć (Cloudflare R2, kompatybilny z S3) — AKTYWNY TYLKO
+# gdy poniższe zmienne środowiskowe są ustawione (na Render). Bez nich
+# (czyli lokalnie) zdjęcia zostają na zwykłym dysku (STORAGES["default"]
+# wyżej) — dokładnie jak dotąd, nic nie trzeba konfigurować do pracy lokalnej.
+#
+# DLACZEGO to jest konieczne, nie tylko "nice to have": Render (darmowy
+# plan) ma efemeryczny dysk — nowe zdjęcia wgrane przez panel PO wdrożeniu
+# znikają przy KAŻDYM kolejnym deployu (nawet niezwiązanym ze zdjęciami).
+# 7 startowych apartamentów mają samo-naprawiający się mechanizm
+# (import_apartments odtwarza je z core/static/), ale zdjęcia realnie
+# wgrane przez kogoś w panelu (np. nowa oferta) NIE MAJĄ kopii zapasowej —
+# raz zgubione na wymazanym dysku, są gubione na zawsze. R2 rozwiązuje to
+# raz na zawsze: zdjęcia żyją poza Render, deploy dysku wcale ich nie dotyka.
+#
+# Wymagane zmienne środowiskowe (Render → Environment):
+#   AWS_ACCESS_KEY_ID       — z panelu Cloudflare R2 (R2 → Manage API Tokens)
+#   AWS_SECRET_ACCESS_KEY   — jak wyżej
+#   AWS_STORAGE_BUCKET_NAME — nazwa bucketu R2 (np. "sole-media")
+#   AWS_S3_ENDPOINT_URL     — https://<ACCOUNT_ID>.r2.cloudflarestorage.com
+#   AWS_S3_CUSTOM_DOMAIN    — publiczny adres bucketu (np. pub-xxxx.r2.dev
+#                             albo własna domena podpięta w R2), BEZ "https://"
+if os.environ.get("AWS_STORAGE_BUCKET_NAME"):
+    AWS_ACCESS_KEY_ID = os.environ["AWS_ACCESS_KEY_ID"]
+    AWS_SECRET_ACCESS_KEY = os.environ["AWS_SECRET_ACCESS_KEY"]
+    AWS_STORAGE_BUCKET_NAME = os.environ["AWS_STORAGE_BUCKET_NAME"]
+    AWS_S3_ENDPOINT_URL = os.environ["AWS_S3_ENDPOINT_URL"]
+    AWS_S3_CUSTOM_DOMAIN = os.environ.get("AWS_S3_CUSTOM_DOMAIN", "")
+    AWS_S3_REGION_NAME = "auto"  # R2 nie ma "regionów" jak AWS, wymaga tej wartości
+    AWS_S3_SIGNATURE_VERSION = "s3v4"
+    AWS_S3_ADDRESSING_STYLE = "virtual"
+    # R2 nie wspiera ACL per-plik jak prawdziwe AWS S3 — bucket jest publiczny
+    # jako całość (ustawione w panelu R2), więc wyłączamy próby wysyłania ACL.
+    AWS_DEFAULT_ACL = None
+    AWS_QUERYSTRING_AUTH = False  # publiczne URL-e bez podpisanych, wygasających tokenów
+    AWS_S3_FILE_OVERWRITE = False  # dwa różne uploady o tej samej nazwie nie nadpisują się
+    STORAGES["default"] = {"BACKEND": "storages.backends.s3.S3Storage"}
 
 DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
 

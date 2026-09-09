@@ -27,6 +27,7 @@ from pathlib import Path
 
 from django.conf import settings
 from django.core.files import File
+from django.core.files.storage import default_storage
 from django.core.management.base import BaseCommand
 
 from core.models import GalleryPhoto
@@ -62,7 +63,10 @@ class Command(BaseCommand):
             match = existing.get((order, alt_text))
 
             if match:
-                if match.image and Path(match.image.path).exists():
+                # default_storage.exists() (nie Path(...).exists()) - dziala
+                # tak samo na lokalnym dysku i na Cloudflare R2/S3 (patrz
+                # STORAGES w settings.py).
+                if match.image and default_storage.exists(match.image.name):
                     continue  # nietknięty starter, plik jest na dysku — nic do zrobienia
                 photo = match
                 action = "Naprawiono"

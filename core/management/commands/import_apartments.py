@@ -35,6 +35,7 @@ from pathlib import Path
 
 from django.conf import settings
 from django.core.files import File
+from django.core.files.storage import default_storage
 from django.core.management.base import BaseCommand
 
 from core.models import Property, PropertyImage
@@ -78,8 +79,14 @@ class Command(BaseCommand):
                 ),
             )
 
+            # default_storage.exists() (nie Path(...).exists()) - dziala tak
+            # samo na lokalnym dysku jak i na Cloudflare R2/S3 (patrz
+            # STORAGES w settings.py), gdzie ".path" nie istnieje w ogole
+            # (zdalny storage nie ma "lokalnej sciezki").
             cover = property_obj.images.filter(is_cover=True).first()
-            cover_file_exists = bool(cover and cover.image and Path(cover.image.path).exists())
+            cover_file_exists = bool(
+                cover and cover.image and default_storage.exists(cover.image.name)
+            )
 
             if cover_file_exists and not force:
                 self.stdout.write(f"Pomijam {title} — zdjęcia już są na dysku.")
