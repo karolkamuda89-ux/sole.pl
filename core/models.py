@@ -157,15 +157,22 @@ def property_image_upload_to(instance, filename):
 
 
 class PropertyImage(models.Model):
-    """Jedno zdjęcie w galerii oferty. `alt_text` jest wymagany — to on
-    trafia do atrybutu alt na stronie (SEO/dostępność), więc w adminie
-    warto go od razu wypełnić czymś konkretnym, nie zostawiać pustego."""
+    """Jedno zdjęcie w galerii oferty. `alt_text` jest OPCJONALNY w formularzu
+    (blank=True) — jeśli formularz wymagał go przy KAŻDYM zdjęciu, a ktoś
+    wgrywał kilkanaście naraz i pominął jedno pole, cały formularz odrzucał
+    zapis z błędem walidacji, a przeglądarka (nie Django) czyści przy tym
+    wybrane pliki w polach typu "file" — trzeba było wybierać zdjęcia od
+    nowa. Zamiast wymuszać wypełnienie, save() niżej sam dogeneruje sensowny
+    opis, gdy zostanie puste."""
 
     property = models.ForeignKey(
         Property, related_name="images", on_delete=models.CASCADE, verbose_name="Oferta"
     )
     image = models.ImageField("Zdjęcie", upload_to=property_image_upload_to)
-    alt_text = models.CharField("Opis alternatywny (SEO)", max_length=250)
+    alt_text = models.CharField(
+        "Opis alternatywny (SEO)", max_length=250, blank=True,
+        help_text="Możesz zostawić puste — zostanie dogenerowany automatycznie.",
+    )
     # Kolejność wyświetlania w galerii — mniejsza liczba = wyżej/wcześniej.
     order = models.PositiveIntegerField("Kolejność", default=0)
     is_cover = models.BooleanField("Zdjęcie główne", default=False)
@@ -179,6 +186,14 @@ class PropertyImage(models.Model):
         return f"{self.property.title} — {self.alt_text or self.image.name}"
 
     def save(self, *args, **kwargs):
+        # Puste alt_text (patrz komentarz w klasie wyżej, dlaczego pole jest
+        # opcjonalne) — dogeneruj coś konkretniejsze niż nic. `refresh_alt_text`
+        # (uruchamiane przy każdym deployu, patrz start.sh) i tak ponumeruje
+        # to porządnie później ("... — zdjęcie N z M"), więc to tylko
+        # rozsądny placeholder na czas między wgraniem a najbliższym deployem.
+        if not self.alt_text and self.property_id:
+            self.alt_text = f"{self.property.title} {self.property.location_phrase()}"
+
         # Nowo wgrane zdjęcie (jeszcze nie .webp) — dociśnij do rozsądnego
         # rozmiaru i zamień na WebP, dokładnie jak optimize_images robi to
         # dla core/static/core/img/raw/. Osoba w panelu admina nie musi
@@ -223,7 +238,14 @@ class GalleryPhoto(models.Model):
     (widoczne po kliknięciu "Pokaż wszystkie zdjęcia")."""
 
     image = models.ImageField("Zdjęcie", upload_to=gallery_photo_upload_to)
-    alt_text = models.CharField("Opis alternatywny (SEO)", max_length=250)
+    # blank=True — patrz komentarz przy PropertyImage.alt_text: wymagane pole
+    # tekstowe przy formularzu z uploadem plików oznacza, że błąd walidacji
+    # (np. puste pole przy jednym z kilku wgrywanych na raz zdjęć) czyści
+    # wybrane pliki w przeglądarce i trzeba wybierać je od nowa.
+    alt_text = models.CharField(
+        "Opis alternatywny (SEO)", max_length=250, blank=True,
+        help_text="Możesz zostawić puste — zostanie dogenerowany automatycznie.",
+    )
     order = models.PositiveIntegerField(
         "Kolejność", default=0,
         help_text="0 = duże zdjęcie, 1-4 = małe kafelki w siatce, wyższe = tylko w powiększeniu.",
@@ -238,6 +260,14 @@ class GalleryPhoto(models.Model):
         return self.alt_text or self.image.name
 
     def save(self, *args, **kwargs):
+        # Puste alt_text — dogeneruj coś konkretniejsze niż nic (patrz
+        # komentarz przy polu wyżej). Ta galeria nie ma osobnej komendy typu
+        # refresh_alt_text, która by to później ponumerowała, więc fallback
+        # dostaje numer kolejności od razu, żeby nie duplikować identycznego
+        # opisu na wielu zdjęciach naraz.
+        if not self.alt_text:
+            self.alt_text = f"Zdjęcie z realizacji Sole na Teneryfie — pozycja {self.order}"
+
         if self.image and not self.image.name.lower().endswith(".webp"):
             try:
                 self.image = convert_uploaded_image_to_webp(self.image)
