@@ -25,10 +25,11 @@
   {% endcomment %}
   <path transform="translate(388.3, 168) scale(0.88) translate(-388.3, -168)" d="M 406.5,167.3 L 388.5,167.0 L 388.4,121.0 L 388.3,75.0 L 404.5,75.0 L 420.8,75.0 L 420.2,109.5 L 419.7,144.0 L 435.3,144.0 L 451.0,144.0 L 451.0,156.0 L 451.0,168.0 L 437.8,167.8 C 430.5,167.6 416.4,167.4 406.5,167.3 Z" fill="#fff"/>
   {% comment %}
-    font-size=180 (odrobinę mniej niż poprzednie 204) — ta sama logika co
-    przy "L" wyżej: trochę mniejsze, żeby lepiej pasowało wysokością do
-    reszty, bez robienia z tego idealnie identycznej wysokości (to
-    wyglądało zbyt "sztucznie", stąd cofnięcie z wersji all-text).
+    font-size=116 — dobrane tak, żeby wysokość E (cap-height, zmierzone
+    Canvas measureText: przy tej czcionce stosunek cap-height/font-size
+    to ok. 0.706) zgadzała się dokładnie z wysokością "L" PO
+    pomniejszeniu wyżej (93 × 0.88 = 81.8 → 81.8 / 0.706 ≈ 116).
+    y=168 to ta sama linia bazowa co "L" (zakotwiczone w transformie wyżej).
   {% endcomment %}
-  <text x="462" y="167" font-family="Outfit, sans-serif" font-weight="700" font-size="180" fill="#fff">E</text>
+  <text x="462" y="168" font-family="Outfit, sans-serif" font-weight="700" font-size="116" fill="#fff">E</text>
 </svg>
