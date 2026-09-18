@@ -14,6 +14,24 @@
 {% endcomment %}
 {% block content %}
 
+{% comment %}
+  Zdarzenie Meta Pixel "ViewContent" dla TEJ konkretnej oferty — samo
+  ustawienie tej zmiennej niczego nie wysyła; faktyczne fbq('track', ...)
+  odpala się w core/static/core/js/cookie-consent.js, TYLKO jeśli
+  odwiedzający już zaakceptował banner cookies (ten sam warunek co
+  PageView). |escapejs, bo title/lokalizacja idą wprost do JS — bez tego
+  apostrof w tytule oferty (np. "Właściciela") rozwaliłby ten <script>.
+{% endcomment %}
+<script>
+  window.metaPixelExtraEvent = {
+    name: "ViewContent",
+    params: {
+      content_name: "{{ property.title|escapejs }}",
+      content_category: "{{ property.get_location_display|escapejs }}",
+    },
+  };
+</script>
+
 <section class="offer-detail">
   <div class="container">
     <a href="{% url 'core:oferta_lista' location=property.location %}" class="legal-back">← Wróć do ofert — {{ property.get_location_display }}</a>

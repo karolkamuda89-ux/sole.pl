@@ -279,6 +279,19 @@
         <div class="form-messages">
           {% for message in messages %}
             <p class="form-message {{ message.tags }}">{{ message }}</p>
+            {% if "success" in message.tags %}
+              {% comment %}
+                Zdarzenie Meta Pixel "Lead" — TYLKO gdy komunikat ma tag
+                "success" (patrz core/views.py: messages.success() woła się
+                wyłącznie po poprawnym zapisie formularza). Nie dotykamy
+                views.py — cała logika zostaje frontendowa, w
+                cookie-consent.js, za tym samym sprawdzeniem zgody co
+                PageView (patrz komentarz w oferta/detail.html).
+              {% endcomment %}
+              <script>
+                window.metaPixelExtraEvent = { name: "Lead", params: { content_name: "Formularz kontaktowy" } };
+              </script>
+            {% endif %}
           {% endfor %}
         </div>
       {% endif %}

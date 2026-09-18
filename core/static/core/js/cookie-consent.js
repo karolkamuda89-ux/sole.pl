@@ -46,6 +46,18 @@
 
     fbq("init", pixelId);
     fbq("track", "PageView");
+
+    // Dodatkowe zdarzenie specyficzne dla KONKRETNEJ podstrony (np.
+    // "ViewContent" przy ofercie, "Lead" po wysłaniu formularza
+    // kontaktowego) — szablon danej strony tylko "zamawia" je przez
+    // window.metaPixelExtraEvent (patrz oferta/detail.html, home.html),
+    // a faktyczne wysłanie zostaje TUTAJ, w jednym miejscu, obok tego
+    // samego sprawdzenia zgody co PageView — żadna podstrona nie omija
+    // bannera cookies, żeby wysłać własne zdarzenie.
+    if (window.metaPixelExtraEvent) {
+      const { name, params } = window.metaPixelExtraEvent;
+      fbq("track", name, params || {});
+    }
   }
 
   function hideBanner() {
