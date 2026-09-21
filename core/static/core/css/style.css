@@ -919,6 +919,19 @@ section {
   font-size: 0.8rem;
 }
 
+/* Honeypot antyspamowy (patrz core/forms.py, ContactForm) — ukryty
+   wizualnie, ale NIE display:none/visibility:hidden (część botów sprawdza
+   te dwie właściwości i pomija takie pola). Zamiast tego spycha się go
+   poza widoczny obszar strony — dla bota "wygląda" jak zwykłe pole. */
+.hp-field-wrap {
+  position: absolute;
+  left: -9999px;
+  top: -9999px;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+}
+
 .field-error {
   font-size: 0.8rem;
   color: #dc2626;
@@ -1015,6 +1028,36 @@ section {
 
 .status-sprzedany {
   background: #64748b;
+}
+
+/* Wstążka "Sprzedane" na zdjęciu oferty (kafelek listy + główne zdjęcie
+   galerii na stronie oferty) — ZAMIAST małej plakietki .offer-tile-status
+   używanej dla "Dostępny"/"Zarezerwowany" (patrz oferta/lista.html,
+   oferta/detail.html: warunek if/else, nigdy obie na raz na tym samym
+   zdjęciu). Czerwony to świadome odejście od palety teal/navy strony —
+   to semantyczny kolor "niedostępne", nie akcent marki. Wymaga, żeby
+   rodzic miał position:relative + overflow:hidden (.offer-tile-cover
+   i .airbnb-gallery-item już to mają). */
+.sold-ribbon {
+  position: absolute;
+  top: 18px;
+  left: -42px;
+  width: 170px;
+  transform: rotate(-45deg);
+  z-index: 5;
+  text-align: center;
+  background: #b3261e;
+  box-shadow: 0 3px 8px rgba(0, 0, 0, 0.3);
+}
+
+.sold-ribbon span {
+  display: block;
+  padding: 7px 0;
+  color: #fff;
+  font-weight: 700;
+  font-size: 0.72rem;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
 }
 
 .offer-tile-body {

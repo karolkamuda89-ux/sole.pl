@@ -31,7 +31,11 @@
               {% if property.cover_image %}
                 <img src="{{ property.cover_image.image.url }}" alt="{{ property.cover_image.alt_text }}" loading="lazy">
               {% endif %}
-              <span class="offer-tile-status status-{{ property.status }}">{{ property.get_status_display }}</span>
+              {% if property.status == "sprzedany" %}
+                <div class="sold-ribbon"><span>Sprzedane</span></div>
+              {% else %}
+                <span class="offer-tile-status status-{{ property.status }}">{{ property.get_status_display }}</span>
+              {% endif %}
             </div>
             <div class="offer-tile-body">
               <h3>{{ property.title }}</h3>

@@ -1,4 +1,5 @@
 import logging
+import time
 
 from django.conf import settings
 from django.contrib import messages
@@ -23,8 +24,15 @@ def home(request):
     if request.method == "POST":
         form = ContactForm(request.POST)
         if form.is_valid():
-            contact_message = form.save()
-            _send_contact_notification(contact_message)
+            # Zgłoszenie od bota (honeypot wypełniony albo wysłane
+            # podejrzanie szybko, patrz ContactForm.is_spam) — NIE zapisujemy
+            # do bazy i NIE wysyłamy maila, ale pokazujemy TAKIE SAMO
+            # podziękowanie i przekierowanie jak przy prawdziwej wiadomości.
+            # Celowo: bot "myśli", że mu się udało i nie próbuje dalej
+            # (np. z innymi danymi), a błąd walidacji tylko by go tego uczył.
+            if not form.is_spam():
+                contact_message = form.save()
+                _send_contact_notification(contact_message)
             messages.success(
                 request,
                 "Dziękujemy za wiadomość! Odezwiemy się najszybciej, jak to możliwe.",
@@ -32,7 +40,10 @@ def home(request):
             return redirect(reverse("core:home") + "#kontakt")
         messages.error(request, "Popraw zaznaczone pola formularza i spróbuj ponownie.")
     else:
-        form = ContactForm()
+        # form_rendered_at = znacznik czasu wygenerowania formularza, patrz
+        # ContactForm.is_spam() — używane do wykrywania botów wysyłających
+        # formularz natychmiast po wczytaniu strony.
+        form = ContactForm(initial={"form_rendered_at": str(time.time())})
 
     # Kolejność (order) w adminie decyduje o układzie: 1. zdjęcie = duży
     # kafelek, 2.-5. = małe kafelki w widocznej siatce, reszta = tylko

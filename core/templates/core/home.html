@@ -357,6 +357,23 @@
         {% endcomment %}
         <form class="contact-form" method="post" novalidate>
           {% csrf_token %}
+          {% comment %}
+            Filtr antyspamowy — dwa pola NIE zapisywane do bazy (patrz
+            ContactForm w core/forms.py, metoda is_spam()):
+            1. "website" — honeypot, ukryty w CSS (.hp-field w style.css).
+               Prawdziwy odwiedzający go nigdy nie zobaczy i nie wypełni;
+               boty wypełniające formularze "na oślep" (po nazwie pola)
+               często tak.
+            2. "form_rendered_at" — znacznik czasu wyrenderowania strony
+               (ustawiany w core/views.py), do wykrycia wysyłki
+               "natychmiastowej" (boty), której człowiek nie jest w stanie
+               zrobić.
+          {% endcomment %}
+          <div class="field hp-field-wrap" aria-hidden="true">
+            <label for="id_website">Strona WWW</label>
+            <input type="text" id="id_website" name="website" class="hp-field" tabindex="-1" autocomplete="off" value="{{ form.website.value|default:'' }}">
+          </div>
+          <input type="hidden" name="form_rendered_at" value="{{ form.form_rendered_at.value|default:'' }}">
           <div class="field">
             <label for="id_name">Imię i nazwisko</label>
             <input type="text" id="id_name" name="name" placeholder="Jan Kowalski" value="{{ form.name.value|default:'' }}">

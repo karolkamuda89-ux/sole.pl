@@ -251,7 +251,7 @@ EMAIL_USE_TLS = os.environ.get("EMAIL_USE_TLS", "True") == "True"
 DEFAULT_FROM_EMAIL = os.environ.get("DEFAULT_FROM_EMAIL", "no-reply@sole.pl")
 
 # Adres, na który trafiają powiadomienia o nowych wiadomościach z formularza.
-CONTACT_EMAIL = "sole@sole.pl"
+CONTACT_EMAIL = "malwinawyrwiak@sole.pl"
 
 
 # ==========================================================================

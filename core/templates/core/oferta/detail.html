@@ -71,6 +71,9 @@
           {% for image in images %}
             <a href="#" class="airbnb-gallery-item{% if forloop.first %} main{% elif forloop.counter > 5 %} hidden-tile{% endif %}">
               <img src="{{ image.image.url }}" alt="{{ image.alt_text }}"{% if not forloop.first %} loading="lazy"{% endif %}>
+              {% if forloop.first and property.status == "sprzedany" %}
+                <div class="sold-ribbon"><span>Sprzedane</span></div>
+              {% endif %}
               {% if forloop.counter == 5 and images|length > 5 %}
                 <span class="airbnb-gallery-more">Pokaż wszystkie {{ images|length }} zdjęć</span>
               {% endif %}
