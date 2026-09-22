@@ -9,6 +9,7 @@ from django.shortcuts import get_object_or_404, redirect, render
 from django.urls import reverse
 
 from .forms import ContactForm
+from .meta_capi import send_lead_event
 from .models import GalleryPhoto, Property
 
 logger = logging.getLogger(__name__)
@@ -33,6 +34,12 @@ def home(request):
             if not form.is_spam():
                 contact_message = form.save()
                 _send_contact_notification(contact_message)
+                # event_id współdzielony z Pixelem w przeglądarce (patrz
+                # home.html/cookie-consent.js) — Meta zdeduplikuje te dwa
+                # zdarzenia "Lead" (serwer + przeglądarka) jako jedno.
+                event_id = f"lead-{contact_message.pk}"
+                send_lead_event(contact_message, request, event_id)
+                request.session["capi_lead_event_id"] = event_id
             messages.success(
                 request,
                 "Dziękujemy za wiadomość! Odezwiemy się najszybciej, jak to możliwe.",
@@ -57,6 +64,9 @@ def home(request):
             "gallery_main": gallery_photos[0] if gallery_photos else None,
             "gallery_small": gallery_photos[1:5],
             "gallery_extra": gallery_photos[5:],
+            # patrz komentarz przy wysyłce zdarzenia Lead wyżej — pop, żeby
+            # zużyć się tylko raz (kolejne odświeżenie strony nic nie wysyła).
+            "capi_lead_event_id": request.session.pop("capi_lead_event_id", ""),
         },
     )
 

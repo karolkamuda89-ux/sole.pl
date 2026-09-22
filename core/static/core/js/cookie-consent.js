@@ -55,8 +55,15 @@
     // samego sprawdzenia zgody co PageView — żadna podstrona nie omija
     // bannera cookies, żeby wysłać własne zdarzenie.
     if (window.metaPixelExtraEvent) {
-      const { name, params } = window.metaPixelExtraEvent;
-      fbq("track", name, params || {});
+      const { name, params, eventID } = window.metaPixelExtraEvent;
+      // eventID (jeśli jest) łączy to zdarzenie z odpowiadającym mu
+      // zdarzeniem wysłanym server-side przez API konwersji (core/meta_capi.py)
+      // — bez tego Meta liczyłaby jeden Lead dwa razy.
+      if (eventID) {
+        fbq("track", name, params || {}, { eventID });
+      } else {
+        fbq("track", name, params || {});
+      }
     }
   }
 

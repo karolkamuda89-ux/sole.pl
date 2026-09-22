@@ -283,13 +283,19 @@
               {% comment %}
                 Zdarzenie Meta Pixel "Lead" — TYLKO gdy komunikat ma tag
                 "success" (patrz core/views.py: messages.success() woła się
-                wyłącznie po poprawnym zapisie formularza). Nie dotykamy
-                views.py — cała logika zostaje frontendowa, w
-                cookie-consent.js, za tym samym sprawdzeniem zgody co
-                PageView (patrz komentarz w oferta/detail.html).
+                wyłącznie po poprawnym zapisie formularza). Faktyczne
+                fbq('track', ...) odpala się w cookie-consent.js, za tym
+                samym sprawdzeniem zgody co PageView. eventID (gdy jest) —
+                to samo zdarzenie zostało już wysłane server-side przez API
+                konwersji (core/meta_capi.py, core/views.py) z identycznym
+                ID, żeby Meta zliczyła to jako jedno zdarzenie, nie dwa.
               {% endcomment %}
               <script>
-                window.metaPixelExtraEvent = { name: "Lead", params: { content_name: "Formularz kontaktowy" } };
+                window.metaPixelExtraEvent = {
+                  name: "Lead",
+                  params: { content_name: "Formularz kontaktowy" },
+                  eventID: "{{ capi_lead_event_id|escapejs }}",
+                };
               </script>
             {% endif %}
           {% endfor %}

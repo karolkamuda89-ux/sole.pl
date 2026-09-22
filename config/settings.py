@@ -264,3 +264,10 @@ CONTACT_EMAIL = "malwinawyrwiak@sole.pl"
 # jak wpiszesz prawdziwe ID, zaktualizuj też tamten opis, żeby był zgodny
 # z rzeczywistością (mechanizm jest już gotowy, więc to tylko zmiana tekstu).
 META_PIXEL_ID = os.environ.get("META_PIXEL_ID", "")
+
+# API konwersji (Conversions API) — wysyłka zdarzenia "Lead" bezpośrednio z
+# serwera, jako uzupełnienie Pixela z przeglądarki (patrz core/meta_capi.py).
+# Token generuje się w Events Manager → [piksel] → Ustawienia → API konwersji
+# → "Wygeneruj token dostępu" (wymaga roli Administratora/Dewelopera w
+# portfolio firmowym). Bez tej zmiennej funkcja nic nie robi.
+META_CAPI_ACCESS_TOKEN = os.environ.get("META_CAPI_ACCESS_TOKEN", "")
