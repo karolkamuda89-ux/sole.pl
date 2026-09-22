@@ -271,3 +271,8 @@ META_PIXEL_ID = os.environ.get("META_PIXEL_ID", "")
 # → "Wygeneruj token dostępu" (wymaga roli Administratora/Dewelopera w
 # portfolio firmowym). Bez tej zmiennej funkcja nic nie robi.
 META_CAPI_ACCESS_TOKEN = os.environ.get("META_CAPI_ACCESS_TOKEN", "")
+
+# Kod testowy z zakładki Events Manager -> Testowanie zdarzeń -> "Potwierdź
+# prawidłowość konfiguracji zdarzeń na serwerze" — ustaw TYLKO tymczasowo,
+# na czas weryfikacji (patrz core/meta_capi.py), potem usuń zmienną w Render.
+META_CAPI_TEST_EVENT_CODE = os.environ.get("META_CAPI_TEST_EVENT_CODE", "")

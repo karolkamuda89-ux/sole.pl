@@ -72,6 +72,8 @@ def send_lead_event(contact_message, request, event_id):
         ],
         "access_token": settings.META_CAPI_ACCESS_TOKEN,
     }
+    if settings.META_CAPI_TEST_EVENT_CODE:
+        payload["test_event_code"] = settings.META_CAPI_TEST_EVENT_CODE
 
     url = f"https://graph.facebook.com/{GRAPH_API_VERSION}/{settings.META_PIXEL_ID}/events"
     req = urllib.request.Request(
