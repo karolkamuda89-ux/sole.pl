@@ -1,0 +1,41 @@
+{% extends "core/base.html" %}
+
+{% block title %}Dziękujemy — Sole{% endblock %}
+{% block description %}Dziękujemy za przesłanie formularza kontaktowego — odezwiemy się najszybciej, jak to możliwe.{% endblock %}
+
+{% comment %}
+  Osobna podstrona podziękowania po wysłaniu formularza kontaktowego —
+  core.views.home() przekierowuje tu po każdym poprawnym POST (zamiast,
+  jak dotąd, komunikatu w sekcji #kontakt na stronie głównej). Dotyczy też
+  zgłoszeń odrzuconych jako spam (patrz core/views.py, ContactForm.is_spam)
+  — bot ma zobaczyć identyczny wynik, więc ta strona nie rozróżnia tych
+  dwóch przypadków.
+
+  Zdarzenie Meta Pixel "Lead" odpala się tutaj zawsze (ta podstrona jest
+  osiągalna tylko po udanym POST) — eventID jest ustawiony TYLKO dla
+  prawdziwych (nie-spamowych) zgłoszeń, bo tylko dla nich wysłaliśmy
+  odpowiadające zdarzenie server-side (core/meta_capi.py); dla spamu
+  eventID jest pusty, więc fbq wysyła zdarzenie bez deduplikacji — dokładnie
+  tak jak działało to wcześniej w home.html.
+{% endcomment %}
+{% block content %}
+
+<script>
+  window.metaPixelExtraEvent = {
+    name: "Lead",
+    params: { content_name: "Formularz kontaktowy" },
+    eventID: "{{ capi_lead_event_id|escapejs }}",
+  };
+</script>
+
+<section class="thanks">
+  <div class="container thanks-content">
+    <div class="thanks-icon">✓</div>
+    <span class="eyebrow">Wiadomość wysłana</span>
+    <h1>Dziękujemy za przesłanie formularza!</h1>
+    <p>Skontaktujemy się z Tobą najszybciej, jak to będzie możliwe.</p>
+    <a href="{% url 'core:home' %}" class="btn btn-primary">Wróć do strony głównej</a>
+  </div>
+</section>
+
+{% endblock %}

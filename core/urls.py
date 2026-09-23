@@ -12,5 +12,6 @@ urlpatterns = [
     # jeden widok (oferta_lista) obsługuje obie strony listy ofert.
     path("oferta/<str:location>/", views.oferta_lista, name="oferta_lista"),
     path("oferta/<str:location>/<slug:slug>/", views.oferta_detail, name="oferta_detail"),
+    path("kontakt/dziekujemy/", views.kontakt_dziekujemy, name="kontakt_dziekujemy"),
     path("polityka-prywatnosci/", views.polityka_prywatnosci, name="polityka_prywatnosci"),
 ]

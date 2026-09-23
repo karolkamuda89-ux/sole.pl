@@ -35,16 +35,16 @@ def home(request):
                 contact_message = form.save()
                 _send_contact_notification(contact_message)
                 # event_id współdzielony z Pixelem w przeglądarce (patrz
-                # home.html/cookie-consent.js) — Meta zdeduplikuje te dwa
-                # zdarzenia "Lead" (serwer + przeglądarka) jako jedno.
+                # kontakt-dziekujemy.html/cookie-consent.js) — Meta
+                # zdeduplikuje te dwa zdarzenia "Lead" (serwer + przeglądarka)
+                # jako jedno.
                 event_id = f"lead-{contact_message.pk}"
                 send_lead_event(contact_message, request, event_id)
                 request.session["capi_lead_event_id"] = event_id
-            messages.success(
-                request,
-                "Dziękujemy za wiadomość! Odezwiemy się najszybciej, jak to możliwe.",
-            )
-            return redirect(reverse("core:home") + "#kontakt")
+            # Osobna podstrona podziękowania (nie ten sam #kontakt) — patrz
+            # kontakt_dziekujemy() niżej. Ten sam redirect dla spamu i
+            # prawdziwej wiadomości (patrz komentarz wyżej).
+            return redirect(reverse("core:kontakt_dziekujemy"))
         messages.error(request, "Popraw zaznaczone pola formularza i spróbuj ponownie.")
     else:
         # form_rendered_at = znacznik czasu wygenerowania formularza, patrz
@@ -64,8 +64,20 @@ def home(request):
             "gallery_main": gallery_photos[0] if gallery_photos else None,
             "gallery_small": gallery_photos[1:5],
             "gallery_extra": gallery_photos[5:],
-            # patrz komentarz przy wysyłce zdarzenia Lead wyżej — pop, żeby
-            # zużyć się tylko raz (kolejne odświeżenie strony nic nie wysyła).
+        },
+    )
+
+
+# Podstrona podziękowania po wysłaniu formularza kontaktowego — home()
+# przekierowuje tu po każdym poprawnym POST (spam i prawdziwa wiadomość
+# jednakowo, patrz komentarz w home()).
+def kontakt_dziekujemy(request):
+    return render(
+        request,
+        "core/kontakt-dziekujemy.html",
+        {
+            # pop, żeby zużyć się tylko raz — odświeżenie tej strony nic
+            # więcej nie wysyła (patrz core/meta_capi.py).
             "capi_lead_event_id": request.session.pop("capi_lead_event_id", ""),
         },
     )

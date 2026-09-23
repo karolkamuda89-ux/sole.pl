@@ -272,32 +272,15 @@
       </div>
 
       {% comment %}
-        Komunikaty Django (django.contrib.messages) — ustawiane w
-        core/views.py po wysłaniu formularza (sukces/błąd walidacji).
+        Komunikaty Django (django.contrib.messages) — tu trafia już tylko
+        błąd walidacji (core/views.py: messages.error()). Sukces ma teraz
+        osobną podstronę (core:kontakt_dziekujemy), więc formularz po
+        udanym wysłaniu nie wraca na tę stronę.
       {% endcomment %}
       {% if messages %}
         <div class="form-messages">
           {% for message in messages %}
             <p class="form-message {{ message.tags }}">{{ message }}</p>
-            {% if "success" in message.tags %}
-              {% comment %}
-                Zdarzenie Meta Pixel "Lead" — TYLKO gdy komunikat ma tag
-                "success" (patrz core/views.py: messages.success() woła się
-                wyłącznie po poprawnym zapisie formularza). Faktyczne
-                fbq('track', ...) odpala się w cookie-consent.js, za tym
-                samym sprawdzeniem zgody co PageView. eventID (gdy jest) —
-                to samo zdarzenie zostało już wysłane server-side przez API
-                konwersji (core/meta_capi.py, core/views.py) z identycznym
-                ID, żeby Meta zliczyła to jako jedno zdarzenie, nie dwa.
-              {% endcomment %}
-              <script>
-                window.metaPixelExtraEvent = {
-                  name: "Lead",
-                  params: { content_name: "Formularz kontaktowy" },
-                  eventID: "{{ capi_lead_event_id|escapejs }}",
-                };
-              </script>
-            {% endif %}
           {% endfor %}
         </div>
       {% endif %}

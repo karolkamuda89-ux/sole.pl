@@ -1376,6 +1376,43 @@ section {
 }
 
 /* ==========================================================================
+   Podstrona podziękowania (po wysłaniu formularza kontaktowego)
+   ========================================================================== */
+.thanks {
+  padding: 96px 0;
+}
+
+.thanks-content {
+  max-width: 520px;
+  margin: 0 auto;
+  text-align: center;
+}
+
+.thanks-icon {
+  width: 64px;
+  height: 64px;
+  margin: 0 auto 24px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
+  background: var(--teal-light);
+  color: var(--teal-dark);
+  font-size: 1.8rem;
+  font-weight: 700;
+}
+
+.thanks-content h1 {
+  font-size: clamp(1.6rem, 3vw, 2.2rem);
+  margin: 0 0 12px;
+}
+
+.thanks-content p {
+  color: var(--text);
+  margin: 0 0 32px;
+}
+
+/* ==========================================================================
    Stopka
    ========================================================================== */
 .site-footer {
