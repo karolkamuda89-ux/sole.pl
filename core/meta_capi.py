@@ -41,6 +41,15 @@ def send_lead_event(contact_message, request, event_id):
         if digits:
             user_data["ph"] = [_hash(digits)]
 
+    # Imię/nazwisko z formularza ("Imię i nazwisko" — jedno pole) — pierwsze
+    # słowo jako imię, reszta jako nazwisko. Poprawia jakość dopasowania
+    # zdarzenia w Meta (patrz Events Manager -> Diagnostyka).
+    name_parts = contact_message.name.strip().split(maxsplit=1)
+    if name_parts:
+        user_data["fn"] = [_hash(name_parts[0])]
+        if len(name_parts) > 1:
+            user_data["ln"] = [_hash(name_parts[1])]
+
     client_ip = request.META.get("REMOTE_ADDR", "")
     forwarded_for = request.META.get("HTTP_X_FORWARDED_FOR", "")
     if forwarded_for:
