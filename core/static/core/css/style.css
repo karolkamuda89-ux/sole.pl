@@ -1112,6 +1112,98 @@ section {
   border-radius: var(--radius);
 }
 
+/* Filtr statusu + sortowanie po cenie (core/oferta/lista.html) — zwykłe
+   GET-y, bez JS (patrz komentarz w szablonie). */
+.offer-filters {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  margin-bottom: 32px;
+  padding-bottom: 24px;
+  border-bottom: 1px solid var(--border);
+}
+
+.offer-filter-status {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.offer-filter-btn {
+  display: inline-block;
+  padding: 8px 16px;
+  border-radius: 999px;
+  border: 1px solid var(--border);
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: var(--text);
+  background: #fff;
+  transition: border-color 0.2s ease, color 0.2s ease, background 0.2s ease;
+}
+
+.offer-filter-btn:hover {
+  border-color: var(--teal);
+}
+
+.offer-filter-btn.active {
+  color: #fff;
+  border-color: transparent;
+  background: var(--navy);
+}
+
+/* Aktywny filtr statusu przejmuje ten sam kolor co plakietka statusu na
+   kafelku (.offer-tile-status, wyżej) — łatwiej skojarzyć filtr z tym,
+   co faktycznie widać na ofertach. */
+.offer-filter-btn.status-dostepny.active {
+  background: var(--teal);
+}
+
+.offer-filter-btn.status-zarezerwowany.active {
+  background: #d97706;
+}
+
+.offer-filter-btn.status-sprzedany.active {
+  background: #64748b;
+}
+
+.offer-sort-form {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-size: 0.9rem;
+}
+
+.offer-sort-form label {
+  font-weight: 600;
+  color: var(--text);
+}
+
+.offer-sort-form select {
+  padding: 8px 12px;
+  border-radius: 8px;
+  border: 1px solid var(--border);
+  font-size: 0.9rem;
+  color: var(--navy);
+  background: #fff;
+}
+
+.offer-sort-submit {
+  padding: 8px 16px;
+  border-radius: 999px;
+  border: 1px solid var(--border);
+  background: #fff;
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: var(--teal-dark);
+  cursor: pointer;
+}
+
+.offer-sort-submit:hover {
+  border-color: var(--teal);
+}
+
 /* ==========================================================================
    Szczegóły oferty (core/oferta/detail.html) — nagłówek z ceną, pasek
    parametrów, galeria (ta sama siatka/lightbox co na stronie głównej),

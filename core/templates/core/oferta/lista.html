@@ -7,9 +7,14 @@
 {% comment %}
   Lista ofert dla jednej lokalizacji — ten sam szablon obsługuje i Polskę,
   i Teneryfę (core.views.oferta_lista, kontekst: location, location_label,
-  properties). Każdy kafelek linkuje do core/oferta/detail.html tej oferty.
-  Nowa oferta dodana w adminie pojawi się tutaj sama — nic nie trzeba
-  dopisywać w szablonie.
+  properties, status_filter, sort, status_choices). Każdy kafelek linkuje
+  do core/oferta/detail.html tej oferty. Nowa oferta dodana w adminie
+  pojawi się tutaj sama — nic nie trzeba dopisywać w szablonie.
+
+  Filtr statusu i sortowanie po cenie to zwykłe GET-y (?status=...&sort=...)
+  — bez JS, działa też z wyłączonym JavaScriptem. Filtr statusu to linki
+  (każdy zachowuje aktualne sortowanie), sortowanie to <select> w formularzu
+  (zachowuje aktualny filtr statusu przez pole hidden) — patrz core/views.py.
 {% endcomment %}
 {% block content %}
 
@@ -21,6 +26,26 @@
       <span class="eyebrow">Oferta</span>
       <h1>Nieruchomości — {{ location_label }}</h1>
       <p>Wybierz ofertę, aby zobaczyć pełny opis, zdjęcia i szczegóły.</p>
+    </div>
+
+    <div class="offer-filters">
+      <div class="offer-filter-status">
+        <a href="?{% if sort %}sort={{ sort }}{% endif %}" class="offer-filter-btn{% if not status_filter %} active{% endif %}">Wszystkie</a>
+        {% for value, label in status_choices %}
+          <a href="?status={{ value }}{% if sort %}&sort={{ sort }}{% endif %}" class="offer-filter-btn status-{{ value }}{% if status_filter == value %} active{% endif %}">{{ label }}</a>
+        {% endfor %}
+      </div>
+
+      <form method="get" class="offer-sort-form">
+        {% if status_filter %}<input type="hidden" name="status" value="{{ status_filter }}">{% endif %}
+        <label for="sort-select">Sortuj:</label>
+        <select id="sort-select" name="sort">
+          <option value="" {% if not sort %}selected{% endif %}>Domyślnie</option>
+          <option value="price_asc" {% if sort == "price_asc" %}selected{% endif %}>Cena: od najniższej</option>
+          <option value="price_desc" {% if sort == "price_desc" %}selected{% endif %}>Cena: od najwyższej</option>
+        </select>
+        <button type="submit" class="offer-sort-submit">Filtruj</button>
+      </form>
     </div>
 
     {% if properties %}
@@ -57,7 +82,11 @@
       </div>
     {% else %}
       <div class="offer-tiles-empty">
-        <p>Na razie nie mamy tu jeszcze żadnych ofert — wróć niedługo.</p>
+        {% if status_filter %}
+          <p>Żadna oferta nie spełnia wybranego filtra — spróbuj wybrać inny status.</p>
+        {% else %}
+          <p>Na razie nie mamy tu jeszcze żadnych ofert — wróć niedługo.</p>
+        {% endif %}
       </div>
     {% endif %}
   </div>

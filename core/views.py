@@ -4,6 +4,7 @@ import time
 from django.conf import settings
 from django.contrib import messages
 from django.core.mail import send_mail
+from django.db.models import F
 from django.http import Http404
 from django.shortcuts import get_object_or_404, redirect, render
 from django.urls import reverse
@@ -122,6 +123,22 @@ def oferta_lista(request, location):
         .prefetch_related("images")
     )
 
+    # Filtr statusu (?status=dostepny/zarezerwowany/sprzedany) — wartość
+    # nieznana/pusta = bez filtrowania (wszystkie statusy, jak dotąd).
+    status_filter = request.GET.get("status", "")
+    if status_filter in dict(Property.STATUS_CHOICES):
+        properties = properties.filter(status=status_filter)
+
+    # Sortowanie po cenie (?sort=price_asc/price_desc) — nulls_last, żeby
+    # oferty bez podanej ceny ("Cena na zapytanie") nie wskakiwały na
+    # początek listy przy sortowaniu rosnącym (domyślne zachowanie SQLite).
+    # Bez parametru zostaje domyślna kolejność (Property.Meta.ordering).
+    sort = request.GET.get("sort", "")
+    if sort == "price_asc":
+        properties = properties.order_by(F("price").asc(nulls_last=True))
+    elif sort == "price_desc":
+        properties = properties.order_by(F("price").desc(nulls_last=True))
+
     return render(
         request,
         "core/oferta/lista.html",
@@ -129,6 +146,9 @@ def oferta_lista(request, location):
             "location": location,
             "location_label": location_labels[location],
             "properties": properties,
+            "status_filter": status_filter,
+            "sort": sort,
+            "status_choices": Property.STATUS_CHOICES,
         },
     )
 

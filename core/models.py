@@ -94,13 +94,21 @@ class Property(models.Model):
     # Odznaczenie w adminie chowa ofertę ze strony bez jej usuwania —
     # przydatne np. gdy nieruchomość jest wycofana, ale dane mają zostać.
     is_published = models.BooleanField("Opublikowana", default=True)
+    # Kolejność na liście ofert (mniejsza liczba = wyżej) — edytowalna wprost
+    # na liście w adminie (patrz PropertyAdmin.list_editable), ten sam wzorzec
+    # co PropertyImage.order/GalleryPhoto.order. Domyślnie 0 dla wszystkich,
+    # więc bez ręcznej zmiany kolejność zostaje jak dotąd (najnowsze pierwsze).
+    order = models.PositiveIntegerField(
+        "Kolejność na stronie", default=0,
+        help_text="Mniejsza liczba = wyżej na liście ofert. Oferty z tą samą wartością sortują się po dacie dodania (najnowsze pierwsze).",
+    )
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
 
     class Meta:
         verbose_name = "Oferta"
         verbose_name_plural = "Oferty"
-        ordering = ["-created_at"]
+        ordering = ["order", "-created_at"]
 
     def __str__(self):
         return self.title

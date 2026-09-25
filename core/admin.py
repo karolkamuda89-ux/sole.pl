@@ -33,14 +33,19 @@ class PropertyImageInline(admin.TabularInline):
 
 @admin.register(Property)
 class PropertyAdmin(admin.ModelAdmin):
-    list_display = ("title", "location", "price", "currency", "area_m2", "rooms", "status", "is_published")
+    list_display = ("title", "location", "order", "price", "currency", "area_m2", "rooms", "status", "is_published")
     # Cenę (i te pola) da się edytować wprost na liście ofert — bez
     # wchodzenia w każdą osobno. Uwaga: pole editable nie może być pierwsze
     # w list_display (Django wymaga, żeby pierwsza kolumna była linkiem
-    # do formularza), stąd "title" zostaje samym linkiem.
-    list_editable = ("price", "currency", "area_m2", "rooms")
+    # do formularza), stąd "title" zostaje samym linkiem. "order" — patrz
+    # help_text pola w models.py: mniejsza liczba = wyżej na liście ofert.
+    list_editable = ("order", "price", "currency", "area_m2", "rooms")
     list_filter = ("location", "status", "is_published")
     search_fields = ("title", "description")
+    # Domyślne sortowanie listy w adminie tak samo jak na stronie (patrz
+    # Property.Meta.ordering) — łatwiej ustawiać kolejność, gdy widać ją
+    # od razu w tym samym układzie, co na froncie.
+    ordering = ("order", "-created_at")
     # Slug uzupełnia się sam w adminie na podstawie tytułu (JS w przeglądarce) —
     # widać/edytuje się go, ale nie trzeba wpisywać ręcznie.
     prepopulated_fields = {"slug": ("title",)}
@@ -53,7 +58,7 @@ class PropertyAdmin(admin.ModelAdmin):
     # Powierzchnia, Zalety, Wyposażenie.
     fieldsets = (
         ("Podstawowe informacje", {
-            "fields": ("title", "slug", "location", "address", "status", "is_published"),
+            "fields": ("title", "slug", "location", "address", "status", "is_published", "order"),
         }),
         ("Parametry", {
             "fields": ("price", "currency", "area_m2", "rooms", "bathrooms"),
