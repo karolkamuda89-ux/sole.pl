@@ -15,3 +15,8 @@ core/static/core/img/raw/
 # nie kod. Startowe dane (7 apartamentów) odtwarza `python manage.py
 # import_apartments`, źródło zdjęć zostaje w core/static/ (w gicie).
 media/
+
+# Backupy bazy produkcyjnej (dumpdata/pg_dump) — zawierają prawdziwe dane
+# klientów (e-maile, telefony, wiadomości), nigdy nie trafiają do gita.
+backup-*.json
+*.sql
