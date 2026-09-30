@@ -19,7 +19,14 @@ services:
   - type: web
     name: strona-mama
     runtime: python
-    plan: free
+    # Ręcznie podniesione w panelu Render na płatny plan "starter"
+    # (0.5 CPU / 512 MB) — na darmowym planie serwer usypia po 15 min
+    # bez ruchu i pierwszy odwiedzający czeka ~minutę, aż się obudzi.
+    # Wpis tutaj tylko dokumentuje rzeczywisty stan — nic tu nie zmienia
+    # samo w sobie (Render nie obniża istniejącej usługi z powrotem przy
+    # kolejnych deployach z tego blueprintu, patrz dokumentacja Render:
+    # "Render retains the current compute plan for an existing service").
+    plan: starter
     buildCommand: "bash build.sh"
     startCommand: "bash start.sh"
     envVars:
