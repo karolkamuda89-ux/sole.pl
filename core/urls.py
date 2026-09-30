@@ -14,4 +14,5 @@ urlpatterns = [
     path("oferta/<str:location>/<slug:slug>/", views.oferta_detail, name="oferta_detail"),
     path("kontakt/dziekujemy/", views.kontakt_dziekujemy, name="kontakt_dziekujemy"),
     path("polityka-prywatnosci/", views.polityka_prywatnosci, name="polityka_prywatnosci"),
+    path("robots.txt", views.robots_txt, name="robots_txt"),
 ]

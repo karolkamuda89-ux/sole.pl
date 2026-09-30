@@ -61,6 +61,7 @@ INSTALLED_APPS = [
     "django.contrib.sessions",
     "django.contrib.messages",
     "django.contrib.staticfiles",
+    "django.contrib.sitemaps",  # mapa strony pod /sitemap.xml — patrz core/sitemaps.py
     "storages",  # trwały storage zdjęć (Cloudflare R2) — patrz STORAGES niżej
     "core",  # nasza aplikacja ze stroną główną
 ]

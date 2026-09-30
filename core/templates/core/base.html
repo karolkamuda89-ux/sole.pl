@@ -12,6 +12,22 @@
   <title>{% block title %}Sole — Nieruchomości Teneryfa{% endblock %}</title>
   <meta name="description" content="{% block description %}Sole — nieruchomości na Teneryfie i w Polsce.{% endblock %}">
 
+  {% comment %}
+    Open Graph — steruje tym, jak link do strony wygląda wklejony na
+    Facebooku/Instagramie/WhatsAppie/Messengerze (tytuł, opis, duże zdjęcie
+    zamiast gołego linku). Domyślne wartości niżej pasują do strony głównej;
+    podstrona oferty (oferta/detail.html) nadpisuje og_title/og_description/
+    og_image własnymi blokami, żeby udostępniony link do KONKRETNEJ oferty
+    pokazywał jej zdjęcie i tytuł, a nie ogólne dane strony.
+  {% endcomment %}
+  <meta property="og:type" content="website">
+  <meta property="og:site_name" content="Sole">
+  <meta property="og:locale" content="pl_PL">
+  <meta property="og:url" content="{{ request.build_absolute_uri }}">
+  <meta property="og:title" content="{% block og_title %}Sole — Nieruchomości Teneryfa{% endblock %}">
+  <meta property="og:description" content="{% block og_description %}Sole — sprzedaż nieruchomości na Teneryfie i w Polsce.{% endblock %}">
+  <meta property="og:image" content="{% block og_image %}{{ request.scheme }}://{{ request.get_host }}{% static 'core/img/hero.webp' %}{% endblock %}">
+
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;700&family=Outfit:wght@500;600;700&display=swap" rel="stylesheet">
@@ -27,6 +43,39 @@
   {% endcomment %}
   <link rel="icon" type="image/png" sizes="32x32" href="{% static 'core/img/favicon-32.png' %}">
   <link rel="apple-touch-icon" sizes="180x180" href="{% static 'core/img/favicon-180.png' %}">
+
+  {% comment %}
+    Dane strukturalne (schema.org/JSON-LD) — niewidoczny dla odwiedzających
+    fragment, który mówi Google WPROST, kim jesteśmy (nazwa, adres, telefon,
+    profile społecznościowe) w formacie, który wyszukiwarka rozumie bez
+    zgadywania. Na każdej podstronie (nie tylko głównej), bo to opis CAŁEJ
+    firmy, nie jednej strony. Osobne dane strukturalne dla KONKRETNEJ oferty
+    (cena, powierzchnia...) są w oferta/detail.html.
+  {% endcomment %}
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "RealEstateAgent",
+    "name": "Sole Sp. z o.o.",
+    "url": "{{ request.scheme }}://{{ request.get_host }}{% url 'core:home' %}",
+    "logo": "{{ request.scheme }}://{{ request.get_host }}{% static 'core/img/favicon-180.png' %}",
+    "image": "{{ request.scheme }}://{{ request.get_host }}{% static 'core/img/hero.webp' %}",
+    "telephone": "+48510047890",
+    "email": "malwinawyrwiak@sole.pl",
+    "address": {
+      "@type": "PostalAddress",
+      "streetAddress": "ul. Słowackiego 4c/14",
+      "postalCode": "34-120",
+      "addressLocality": "Andrychów",
+      "addressCountry": "PL"
+    },
+    "sameAs": [
+      "https://www.facebook.com/profile.php?id=61572312422971",
+      "https://www.instagram.com/nieruchomosci.teneryfa.polska/",
+      "https://www.linkedin.com/in/malwina-wyrwiak-322970355/"
+    ]
+  }
+  </script>
 </head>
 <body>
 

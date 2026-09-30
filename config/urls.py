@@ -1,12 +1,23 @@
 from django.conf import settings
 from django.contrib import admin
+from django.contrib.sitemaps.views import sitemap
 from django.urls import include, path, re_path
 from django.views.static import serve as serve_static
 
+from core.sitemaps import OfertaListaSitemap, PropertySitemap, StaticViewSitemap
+
+sitemaps = {
+    "static": StaticViewSitemap,
+    "oferty-listy": OfertaListaSitemap,
+    "oferty": PropertySitemap,
+}
+
 # Główny router projektu — /admin/ to panel administracyjny Django,
-# wszystko inne (na razie tylko "/") obsługuje aplikacja core (core/urls.py).
+# /sitemap.xml to mapa strony dla wyszukiwarek (patrz core/sitemaps.py),
+# wszystko inne (w tym /robots.txt) obsługuje aplikacja core (core/urls.py).
 urlpatterns = [
     path("admin/", admin.site.urls),
+    path("sitemap.xml", sitemap, {"sitemaps": sitemaps}, name="sitemap"),
     path("", include("core.urls")),
 ]
 

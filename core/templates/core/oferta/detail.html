@@ -1,8 +1,18 @@
 {% extends "core/base.html" %}
-{% load static %}
+{% load static l10n %}
 
 {% block title %}{{ property.title }} — {{ property.get_location_display }} | Sole{% endblock %}
 {% block description %}{{ property.title }}, {{ property.get_location_display }}{% if property.area_m2 %}, {{ property.area_m2 }} m²{% endif %}{% if property.address %} — {{ property.address }}{% endif %}{% endblock %}
+
+{% comment %}
+  Open Graph tej KONKRETNEJ oferty (patrz base.html) — udostępniony link do
+  tej podstrony (WhatsApp, Facebook) pokaże zdjęcie i tytuł tej oferty,
+  zamiast ogólnych danych strony. og_image spada na domyślne zdjęcie
+  strony (block.super), jeśli oferta nie ma jeszcze żadnego zdjęcia.
+{% endcomment %}
+{% block og_title %}{{ property.title }} — {{ property.get_location_display }} | Sole{% endblock %}
+{% block og_description %}{{ property.title }}, {{ property.get_location_display }}{% if property.area_m2 %}, {{ property.area_m2 }} m²{% endif %}{% if property.address %} — {{ property.address }}{% endif %}{% endblock %}
+{% block og_image %}{% if property.cover_image %}{{ property.cover_image.image.url }}{% else %}{{ block.super }}{% endif %}{% endblock %}
 
 {% comment %}
   Podstrona jednej oferty — wspólna dla wszystkich ofert (patrz
@@ -31,6 +41,55 @@
     },
   };
 </script>
+
+{% comment %}
+  Dane strukturalne (schema.org/JSON-LD) dla TEJ oferty — mówi Google
+  wprost, że to ogłoszenie sprzedaży konkretnej nieruchomości z ceną,
+  powierzchnią i adresem, zamiast zgadywania z samego tekstu strony.
+  Osobne od Organization/RealEstateAgent w base.html (to opisuje firmę,
+  to niżej opisuje TĘ ofertę). Dwa zabezpieczenia przed polskim
+  formatowaniem liczb (przecinek dziesiętny, spacja jako separator
+  tysięcy) psującym JSON: tag "localize off" niżej (dla zwykłych zmiennych
+  jak area_m2) i sufiks "u" przy price|floatformat (bo floatformat
+  ignoruje "localize off" — ma własne, zawsze-włączone domyślne
+  lokalizowanie, patrz źródło filtra w Django).
+{% endcomment %}
+{% localize off %}
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "RealEstateListing",
+  "name": "{{ property.title|escapejs }}",
+  "description": "{{ property.description|default:property.title|truncatechars:300|escapejs }}",
+  "url": "{{ request.build_absolute_uri }}",
+  "datePosted": "{{ property.created_at|date:'c' }}",
+  {% if property.cover_image %}"image": "{{ property.cover_image.image.url }}",{% endif %}
+  "offers": {
+    "@type": "Offer",
+    {% if property.price %}"price": "{{ property.price|floatformat:"0u" }}",
+    "priceCurrency": "{{ property.currency }}",{% endif %}
+    "availability": "https://schema.org/{% if property.status == 'sprzedany' %}SoldOut{% else %}InStock{% endif %}",
+    "businessFunction": "https://schema.org/Sell",
+    "itemOffered": {
+      "@type": "Apartment",
+      "name": "{{ property.title|escapejs }}",
+      {% if property.area_m2 %}"floorSize": {
+        "@type": "QuantitativeValue",
+        "value": "{{ property.area_m2 }}",
+        "unitCode": "MTK"
+      },{% endif %}
+      {% if property.rooms %}"numberOfRooms": "{{ property.rooms }}",{% endif %}
+      {% if property.bathrooms %}"numberOfBathroomsTotal": "{{ property.bathrooms }}",{% endif %}
+      "address": {
+        "@type": "PostalAddress",
+        {% if property.address %}"streetAddress": "{{ property.address|escapejs }}",{% endif %}
+        "addressCountry": "{% if property.location == 'polska' %}PL{% else %}ES{% endif %}"
+      }
+    }
+  }
+}
+</script>
+{% endlocalize %}
 
 <section class="offer-detail">
   <div class="container">

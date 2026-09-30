@@ -5,7 +5,7 @@ from django.conf import settings
 from django.contrib import messages
 from django.core.mail import send_mail
 from django.db.models import F
-from django.http import Http404
+from django.http import Http404, HttpResponse
 from django.shortcuts import get_object_or_404, redirect, render
 from django.urls import reverse
 
@@ -171,3 +171,18 @@ def oferta_detail(request, location, slug):
 # w szablonie), link do niej jest w stopce (base.html).
 def polityka_prywatnosci(request):
     return render(request, "core/polityka-prywatnosci.html")
+
+
+# /robots.txt — mówi robotom wyszukiwarek, czego nie indeksować (panel
+# admina) i wskazuje im mapę strony (core/sitemaps.py, config/urls.py).
+# Zwykła funkcja zamiast statycznego pliku — request.build_absolute_uri()
+# sam dobiera właściwą domenę (sole.pl na produkcji, localhost lokalnie),
+# nie trzeba tego ręcznie synchronizować w dwóch miejscach.
+def robots_txt(request):
+    lines = [
+        "User-agent: *",
+        "Disallow: /admin/",
+        "",
+        f"Sitemap: {request.build_absolute_uri('/sitemap.xml')}",
+    ]
+    return HttpResponse("\n".join(lines), content_type="text/plain")
