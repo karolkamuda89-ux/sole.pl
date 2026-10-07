@@ -15,4 +15,5 @@ urlpatterns = [
     path("kontakt/dziekujemy/", views.kontakt_dziekujemy, name="kontakt_dziekujemy"),
     path("polityka-prywatnosci/", views.polityka_prywatnosci, name="polityka_prywatnosci"),
     path("robots.txt", views.robots_txt, name="robots_txt"),
+    path("googleb6ce55e33ff219e7.html", views.google_site_verification, name="google_site_verification"),
 ]

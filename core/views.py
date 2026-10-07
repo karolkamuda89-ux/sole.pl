@@ -186,3 +186,15 @@ def robots_txt(request):
         f"Sitemap: {request.build_absolute_uri('/sitemap.xml')}",
     ]
     return HttpResponse("\n".join(lines), content_type="text/plain")
+
+
+# Plik weryfikacyjny Google Search Console (metoda "Plik HTML" zamiast
+# DNS — ta druga utknęła bez wyraźnego powodu mimo poprawnego rekordu TXT,
+# patrz historia). Treść i nazwa pliku pochodzą wprost z Search Console
+# (Ustawienia własności → Plik HTML) — NIE usuwać, nawet po udanej
+# weryfikacji (Google może sprawdzać go ponownie okresowo).
+def google_site_verification(request):
+    return HttpResponse(
+        "google-site-verification: googleb6ce55e33ff219e7.html",
+        content_type="text/plain",
+    )
