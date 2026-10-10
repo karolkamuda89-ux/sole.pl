@@ -28,9 +28,21 @@
   <meta property="og:description" content="{% block og_description %}Sole — sprzedaż nieruchomości na Teneryfie i w Polsce.{% endblock %}">
   <meta property="og:image" content="{% block og_image %}{{ request.scheme }}://{{ request.get_host }}{% static 'core/img/hero.webp' %}{% endblock %}">
 
+  {% comment %}
+    Czcionki Google — ładowane asynchronicznie (sztuczka "media=print,
+    potem onload przełącza na all"), żeby przeglądarka nie czekała na
+    pobranie CSS-a z fonts.googleapis.com, zanim pokaże resztę strony.
+    Zwykły <link rel="stylesheet"> blokował renderowanie na ok. 2 sekundy
+    (patrz PageSpeed Insights, audyt "Prośby o zablokowanie renderowania")
+    — to był największy pojedynczy hamulec szybkości strony. <noscript>
+    niżej to zabezpieczenie dla botów/przeglądarek bez JS, żeby i tak
+    dostały czcionki (choć już w sposób blokujący, ale to skrajny przypadek).
+  {% endcomment %}
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;700&family=Outfit:wght@500;600;700&display=swap" rel="stylesheet">
+  <link rel="preload" as="style" href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;700&family=Outfit:wght@500;600;700&display=swap">
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;700&family=Outfit:wght@500;600;700&display=swap" rel="stylesheet" media="print" onload="this.media='all'">
+  <noscript><link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;700&family=Outfit:wght@500;600;700&display=swap" rel="stylesheet"></noscript>
 
   <link rel="stylesheet" href="{% static 'core/css/style.css' %}">
 

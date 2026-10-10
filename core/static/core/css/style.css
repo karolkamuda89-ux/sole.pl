@@ -1494,6 +1494,12 @@ section {
   font-weight: 700;
 }
 
+/* Wariant z dłuższym tekstem (np. "404") — ten sam krążek co .thanks-icon,
+   tylko mniejsza czcionka, żeby trzy znaki zmieściły się bez przycinania. */
+.thanks-icon-text {
+  font-size: 1.1rem;
+}
+
 .thanks-content h1 {
   font-size: clamp(1.6rem, 3vw, 2.2rem);
   margin: 0 0 12px;

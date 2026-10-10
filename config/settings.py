@@ -217,6 +217,13 @@ if os.environ.get("AWS_STORAGE_BUCKET_NAME"):
     AWS_DEFAULT_ACL = None
     AWS_QUERYSTRING_AUTH = False  # publiczne URL-e bez podpisanych, wygasających tokenów
     AWS_S3_FILE_OVERWRITE = False  # dwa różne uploady o tej samej nazwie nie nadpisują się
+    # Długi czas cache w przeglądarce (rok) — bezpieczne, bo AWS_S3_FILE_OVERWRITE=False
+    # oznacza, że pod jednym adresem URL zdjęcia ZAWSZE jest ta sama treść (nowy
+    # upload dostaje nowy, unikalny adres, nigdy nie podmienia starego). Patrz
+    # PageSpeed Insights, audyt "Używaj efektywnego czasu przechowywania w pamięci
+    # podręcznej" — dotyczy TYLKO nowo wgranych zdjęć (R2 nie aktualizuje metadanych
+    # wstecznie dla już istniejących plików).
+    AWS_S3_OBJECT_PARAMETERS = {"CacheControl": "max-age=31536000, public"}
     STORAGES["default"] = {"BACKEND": "storages.backends.s3.S3Storage"}
 
 DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"

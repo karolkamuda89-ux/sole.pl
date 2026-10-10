@@ -1,0 +1,28 @@
+{% extends "core/base.html" %}
+
+{% block title %}Strona nie została znaleziona — Sole{% endblock %}
+{% block description %}Strona, której szukasz, nie istnieje lub została przeniesiona.{% endblock %}
+
+{% comment %}
+  Własna strona 404 (zamiast domyślnej, angielskiej i nieostylowanej
+  strony Django) — Django automatycznie używa tego szablonu dla
+  nieznalezionych adresów, gdy DEBUG=False (patrz django.views.defaults.
+  page_not_found). Musi leżeć bezpośrednio w core/templates/404.html
+  (bez podfolderu "core/"), bo pod taką dokładnie nazwą Django jej szuka.
+  Ten sam wzorzec wizualny co core/templates/core/kontakt-dziekujemy.html
+  (.thanks / .thanks-content), żeby błąd wyglądał spójnie ze stroną,
+  zamiast gołego tekstu.
+{% endcomment %}
+{% block content %}
+
+<section class="thanks">
+  <div class="container thanks-content">
+    <div class="thanks-icon thanks-icon-text">404</div>
+    <span class="eyebrow">Strona nie znaleziona</span>
+    <h1>Ups, tej strony tu nie ma</h1>
+    <p>Adres mógł się zmienić albo oferta, której szukasz, została już sprzedana i usunięta. Sprawdź aktualną ofertę albo wróć na stronę główną.</p>
+    <a href="{% url 'core:home' %}" class="btn btn-primary">Wróć do strony głównej</a>
+  </div>
+</section>
+
+{% endblock %}
